@@ -22,10 +22,44 @@ def _create_tables(conn):
     try:
         cursor = conn.cursor()
         cursor.execute(sql_queries.CREATE_TABLE_CHARACTERS)
+        cursor.execute(sql_queries.CREATE_TABLE_COMICS)
         conn.commit()
         print("Table create successfully")
     except Exception as e:
         print(f"Error: {e}")
+
+def _get_comics(character_id):
+    params = dict(ts=TS, apikey=PUBLIC_KEY, hash=HASH)
+    response = requests.get(url=f"{NETFLIX_BASE_URL}/v1/public/characters/{character_id}/comics", params=params)
+    if response.status_code == 200:
+        response_body = json.loads(response.text)
+        if response_body.get("data", {}).get("results"):
+            for comics in response_body.get("data", {}).get("results"):
+
+
+def insert_comics_into_db(id,
+                          digital_id,
+                          character_id,
+                          title,
+                          issue_number,
+                          variantDescription,
+                          description,
+                          modified,
+                          isbn,
+                          upc,
+                          diamondCode,
+                          ean,
+                          issn,
+                          format,
+                          pageCount):
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql_queries.INSERT_INTO_COMICS,
+                       (id,digital_id, character_id, title, issue_number, variantDescription, description, modified,
+                          isbn, upc, diamondCode, ean, issn, format, pageCount))
+    except Exception as e:
+        print(f"Can not insert data into table: {e}")
+
 
 def _get_characters():
     params = dict(ts=TS, apikey=PUBLIC_KEY, hash=HASH)
@@ -34,13 +68,14 @@ def _get_characters():
         response_body = json.loads(response.text)
         if response_body.get("data", {}).get("results"):
             for character in response_body.get("data", {}).get("results"):
-                insert_into_db(
+                insert_character_into_db(
                     id=character.get('id', 0),
                     name=character.get('name', ''),
                     description=character.get('description', ''),
                     modified=datetime.strptime(character.get('modified'), '%Y-%m-%dT%H:%M:%S%z'))
+                _get_comics()
 
-def insert_into_db(id, name, description, modified):
+def insert_character_into_db(id, name, description, modified):
     try:
         cursor = conn.cursor()
         cursor.execute(sql_queries.INSERT_INTO_CHARACTERS, (id, name, description, modified))
@@ -53,6 +88,6 @@ def insert_into_db(id, name, description, modified):
 
 
 if __name__ == '__main__':
-
     _create_tables(conn=conn)
     _get_characters()
+
