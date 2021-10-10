@@ -1,0 +1,5 @@
+
+
+CREATE_TABLE_CHARACTERS = 'CREATE TABLE IF NOT EXISTS characters (id INTEGER, name VARCHAR(255), description TEXT, modified TIMESTAMP, PRIMARY KEY(id))'
+
+INSERT_INTO_CHARACTERS = 'INSERT INTO characters VALUES (%s, %s, %s, %s)'
