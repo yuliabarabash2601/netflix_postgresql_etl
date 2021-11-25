@@ -1,0 +1,4317 @@
+openapi: 3.0.3
+info:
+  title: Konfuzio API
+  version: v2
+  description: |-
+    Konfuzio is a cloud and on-premises B2B platform used thousands of times a day to train and run AI. SMEs and large companies train their AI to understand and process documents, e-mails and texts like human beings. Find out more on our <a href="https://konfuzio.com/" target="_blank">homepage</a>.
+
+    Further technical documentation is available online on our <a href="https://dev.konfuzio.com/" target="_blank">developer's guide</a>.
+  termsOfService: https://konfuzio.com/impressum/
+  contact:
+    email: info@konfuzio.com
+  license:
+    name: Helm & Nagel GmbH
+paths:
+  /api/v2/docs/:
+    post:
+      operationId: docs_create
+      description: |-
+        By default the processing of a document is asynchronous.
+        You can set a `callback_url` to get notified once the processing has finished or         pull the results in a separate request using the `extraction_url` attribute.
+
+        Alternatively, you can make the processing synchronous by setting `sync=True`. Keep in mind that the         processing can take several minutes for large documents.
+      summary: Upload a new document
+      tags:
+      - docs
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateDocumentSerializerV2Request'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDocumentSerializerV2'
+          description: Resource created.
+        '500':
+          description: Internal server error. Please contact support.
+        '400':
+          description: Bad request. See validation error.
+  /api/v2/docs/{id}/:
+    get:
+      operationId: docs_retrieve
+      description: ' '
+      summary: Retrieve a document's details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      tags:
+      - docs
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSerializerV2'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+    put:
+      operationId: docs_update
+      description: ''
+      summary: Update an existing document
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      tags:
+      - docs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicDocumentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PublicDocumentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PublicDocumentRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDocument'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+        '400':
+          description: Bad request. See validation error.
+    patch:
+      operationId: docs_partial_update
+      description: ' '
+      summary: Update an existing document
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      tags:
+      - docs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicDocumentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PublicDocumentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PublicDocumentRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDocument'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+        '400':
+          description: Bad request. See validation error.
+    delete:
+      operationId: docs_destroy
+      description: ''
+      summary: Delete a document
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      tags:
+      - docs
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+  /api/v2/docs/{id}/feedback/:
+    patch:
+      operationId: docs_feedback_partial_update
+      description: |-
+        You can give feedback by sending the adapted extraction result dictionary.
+
+        Example python code:
+        ```python
+        import requests
+        import json
+        from requests.auth import HTTPBasicAuth
+
+        url = f"https://app.konfuzio.com/api/v2/docs/{DOC_ID}/"
+        feedback_url = url + "/feedback/"
+        auth = HTTPBasicAuth(KONFUZIO_USER, KONFUZIO_PASSWORD)
+        data = requests.get(url=url, auth=auth).json()
+
+        # Mark Extraction as correct.
+        data['labels']['Bruttozahlweise']['extractions'][0]['correct'] = True
+
+        # Add new Extraction which has not been in result list.
+        data['labels']['Bruttozahlweise']['extractions'].append({'value': '123,45'})
+
+        r = requests.patch(url=feedback_url, data=json.dumps(data), auth=auth,
+            headers={'Content-Type': 'application/json'},)
+        ```
+      summary: Give feedback to the extraction results of a document
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      tags:
+      - docs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentSerializerV2Request'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DocumentSerializerV2Request'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DocumentSerializerV2Request'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentSerializerV2'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+        '400':
+          description: Bad request. See validation error.
+  /api/v2/labels/:
+    get:
+      operationId: labels_list
+      description: ' '
+      summary: List all labels for the user
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - labels
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPublicLabelList'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+    post:
+      operationId: labels_create
+      description: ' '
+      summary: Create a new label
+      tags:
+      - labels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicLabel'
+          description: Resource created.
+        '500':
+          description: Internal server error. Please contact support.
+        '400':
+          description: Bad request. See validation error.
+  /api/v2/labels/{id}/:
+    get:
+      operationId: labels_retrieve
+      description: ' '
+      summary: Retrieve a label's details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this label.
+        required: true
+      tags:
+      - labels
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicLabel'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+    put:
+      operationId: labels_update
+      description: ' '
+      summary: Update an existing label
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this label.
+        required: true
+      tags:
+      - labels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicLabel'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+        '400':
+          description: Bad request. See validation error.
+    patch:
+      operationId: labels_partial_update
+      description: ' '
+      summary: Update an existing label
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this label.
+        required: true
+      tags:
+      - labels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PublicLabelRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicLabel'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+        '400':
+          description: Bad request. See validation error.
+  /api/projects/:
+    get:
+      operationId: projects_list
+      description: ' '
+      summary: List all projects for the user
+      tags:
+      - projects
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+    post:
+      operationId: projects_create
+      description: ' '
+      summary: Create a new project
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: Resource created.
+        '500':
+          description: Internal server error. Please contact support.
+        '400':
+          description: Bad request. See validation error.
+  /api/projects/{id}/:
+    get:
+      operationId: projects_retrieve
+      description: This endpoint returns all labels, label sets and categories in
+        a project. Label sets and categories are named "section_labels" for historical
+        reasons. Label sets are section_labels with is_default=False, categories are
+        section_labels with is_default=True.
+      summary: Retrieve a project's details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - projects
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+    put:
+      operationId: projects_update
+      description: ' '
+      summary: Update an existing project
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+        '400':
+          description: Bad request. See validation error.
+    patch:
+      operationId: projects_partial_update
+      description: ' '
+      summary: Update an existing project
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+        '400':
+          description: Bad request. See validation error.
+  /api/projects/{project_id}/docs/:
+    get:
+      operationId: projects_docs_list
+      description: |-
+        Use this endpoint to get meta information for all documents in your projects.
+        You can use the `created_at` or `id` field to identify recently added documents.
+        The default limit of returned documents for a request is 1000.
+      summary: Get a list of all documents in your project
+      parameters:
+      - in: query
+        name: created_at_after
+        schema:
+          type: string
+          format: date
+        description: An optional filter to query documents which have been created
+          after a specific date (e.g. "2021-07-31")
+      - in: query
+        name: created_at_before
+        schema:
+          type: string
+          format: date
+        description: An optional filter to query documents which have been created
+          before a specific date (e.g. "2021-07-31")
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: path
+        name: project_id
+        schema:
+          type: integer
+        description: A unique integer value identifying the project.
+        required: true
+      tags:
+      - projects
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDocumentMetaList'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+  /api/projects/{project_id}/docs/{doc_id}/annotations/:
+    get:
+      operationId: projects_docs_annotations_list
+      description: Get all annotations for a document as a list.
+      summary: Get all annotations for a document
+      parameters:
+      - in: path
+        name: doc_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      - in: path
+        name: project_id
+        schema:
+          type: integer
+        description: A unique integer value identifying the project.
+        required: true
+      tags:
+      - projects
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SequenceAnnotation'
+              examples:
+                Invoices:
+                  value:
+                  - id: 4193556
+                    label: 6768
+                    label_text: invoice number
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Invoice
+                    section_label_id: 1704
+                    section: 281875
+                    offset_string: INV-3337
+                    offset_string_original: INV-3337
+                    translated_string: null
+                    normalized: INV-3337
+                    start_offset: 237
+                    end_offset: 245
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 452.8008
+                      x1: 488.8152
+                      y0: 716.1336000000001
+                      y1: 722.6064000000001
+                      top: 118.39680000000001
+                      bottom: 124.86959999999999
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 452.8008
+                      x1: 488.8152
+                      y0: 716.1336000000001
+                      y1: 722.6064000000001
+                      top: 118.39680000000001
+                      bottom: 124.86959999999999
+                      end_offset: 245
+                      page_index: 0
+                      line_number: 3
+                      start_offset: 237
+                      offset_string: INV-3337
+                      offset_string_original: INV-3337
+                    selection_bbox:
+                      x0: 452.8008
+                      x1: 488.8152
+                      y0: 716.1336000000001
+                      y1: 722.6064000000001
+                      top: 118.39680000000001
+                      bottom: 124.86959999999999
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4193567
+                    label: 6767
+                    label_text: invoice date
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Invoice
+                    section_label_id: 1704
+                    section: 281875
+                    offset_string: January 25, 2016
+                    offset_string_original: January 25, 2016
+                    translated_string: null
+                    normalized: January 25, 2016
+                    start_offset: 462
+                    end_offset: 478
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 452.08799999999997
+                      x1: 519.588
+                      y0: 682.7976
+                      y1: 690.9839999999999
+                      top: 150.0192
+                      bottom: 158.20559999999998
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 452.08799999999997
+                      x1: 519.588
+                      y0: 682.7976
+                      y1: 690.9839999999999
+                      top: 150.0192
+                      bottom: 158.20559999999998
+                      end_offset: 478
+                      page_index: 0
+                      line_number: 6
+                      start_offset: 462
+                      offset_string: January 25, 2016
+                      offset_string_original: January 25, 2016
+                    selection_bbox:
+                      x0: 452.08799999999997
+                      x1: 519.588
+                      y0: 682.7976
+                      y1: 690.9839999999999
+                      top: 150.0192
+                      bottom: 158.20559999999998
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4193748
+                    label: 6765
+                    label_text: gross amount
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Invoice
+                    section_label_id: 1704
+                    section: 281875
+                    offset_string: $93.50
+                    offset_string_original: $93.50
+                    translated_string: null
+                    normalized: $93.50
+                    start_offset: 715
+                    end_offset: 721
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 452.1744
+                      x1: 478.5264
+                      y0: 651.9168000000001
+                      y1: 659.7504
+                      top: 181.25279999999998
+                      bottom: 189.0864
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 452.1744
+                      x1: 478.5264
+                      y0: 651.9168000000001
+                      y1: 659.7504
+                      top: 181.25279999999998
+                      bottom: 189.0864
+                      end_offset: 721
+                      page_index: 0
+                      line_number: 9
+                      start_offset: 715
+                      offset_string: $93.50
+                      offset_string_original: $93.50
+                    selection_bbox:
+                      x0: 452.1744
+                      x1: 478.5264
+                      y0: 651.9168000000001
+                      y1: 659.7504
+                      top: 181.25279999999998
+                      bottom: 189.0864
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4193753
+                    label: 6771
+                    label_text: product name
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: invoice item
+                    section_label_id: 1706
+                    section: 281889
+                    offset_string: Web Design
+                    offset_string_original: Web Design
+                    translated_string: null
+                    normalized: Web Design
+                    start_offset: 1038
+                    end_offset: 1048
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 102.65039999999999
+                      x1: 149.8464
+                      y0: 480.8952
+                      y1: 489.168
+                      top: 351.8352
+                      bottom: 360.108
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 102.65039999999999
+                      x1: 149.8464
+                      y0: 480.8952
+                      y1: 489.168
+                      top: 351.8352
+                      bottom: 360.108
+                      end_offset: 1048
+                      page_index: 0
+                      line_number: 17
+                      start_offset: 1038
+                      offset_string: Web Design
+                      offset_string_original: Web Design
+                    selection_bbox:
+                      x0: 102.65039999999999
+                      x1: 149.8464
+                      y0: 480.8952
+                      y1: 489.168
+                      top: 351.8352
+                      bottom: 360.108
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4193755
+                    label: 6770
+                    label_text: unit price
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: invoice item
+                    section_label_id: 1706
+                    section: 281889
+                    offset_string: $85.00
+                    offset_string_original: $85.00
+                    translated_string: null
+                    normalized: $85.00
+                    start_offset: 1092
+                    end_offset: 1098
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 363.27599999999995
+                      x1: 389.5416
+                      y0: 477.0648
+                      y1: 484.89840000000004
+                      top: 356.1048
+                      bottom: 363.9384
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 363.27599999999995
+                      x1: 389.5416
+                      y0: 477.0648
+                      y1: 484.89840000000004
+                      top: 356.1048
+                      bottom: 363.9384
+                      end_offset: 1098
+                      page_index: 0
+                      line_number: 17
+                      start_offset: 1092
+                      offset_string: $85.00
+                      offset_string_original: $85.00
+                    selection_bbox:
+                      x0: 363.27599999999995
+                      x1: 389.5416
+                      y0: 477.0648
+                      y1: 484.89840000000004
+                      top: 356.1048
+                      bottom: 363.9384
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4193756
+                    label: 6772
+                    label_text: subtotal
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: invoice item
+                    section_label_id: 1706
+                    section: 281889
+                    offset_string: $85.00
+                    offset_string_original: $85.00
+                    translated_string: null
+                    normalized: $85.00
+                    start_offset: 1125
+                    end_offset: 1131
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 517.8744
+                      x1: 544.14
+                      y0: 477.0648
+                      y1: 484.89840000000004
+                      top: 356.1048
+                      bottom: 363.9384
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 517.8744
+                      x1: 544.14
+                      y0: 477.0648
+                      y1: 484.89840000000004
+                      top: 356.1048
+                      bottom: 363.9384
+                      end_offset: 1131
+                      page_index: 0
+                      line_number: 17
+                      start_offset: 1125
+                      offset_string: $85.00
+                      offset_string_original: $85.00
+                    selection_bbox:
+                      x0: 517.8744
+                      x1: 544.14
+                      y0: 477.0648
+                      y1: 484.89840000000004
+                      top: 356.1048
+                      bottom: 363.9384
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4193751
+                    label: 6769
+                    label_text: quantity
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: invoice item
+                    section_label_id: 1706
+                    section: 281889
+                    offset_string: '1.00'
+                    offset_string_original: '1.00'
+                    translated_string: null
+                    normalized: '1.00'
+                    start_offset: 1145
+                    end_offset: 1149
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 61.0344
+                      x1: 76.9464
+                      y0: 477.9216
+                      y1: 484.22880000000004
+                      top: 356.77439999999996
+                      bottom: 363.0816
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 61.0344
+                      x1: 76.9464
+                      y0: 477.9216
+                      y1: 484.22880000000004
+                      top: 356.77439999999996
+                      bottom: 363.0816
+                      end_offset: 1149
+                      page_index: 0
+                      line_number: 18
+                      start_offset: 1145
+                      offset_string: '1.00'
+                      offset_string_original: '1.00'
+                    selection_bbox:
+                      x0: 61.0344
+                      x1: 76.9464
+                      y0: 477.9216
+                      y1: 484.22880000000004
+                      top: 356.77439999999996
+                      bottom: 363.0816
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4193749
+                    label: 6765
+                    label_text: gross amount
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Invoice
+                    section_label_id: 1704
+                    section: 281875
+                    offset_string: $93.50
+                    offset_string_original: $93.50
+                    translated_string: null
+                    normalized: $93.50
+                    start_offset: 1622
+                    end_offset: 1628
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 517.8384
+                      x1: 544.1904000000001
+                      y0: 409.0104
+                      y1: 416.84400000000005
+                      top: 424.1592
+                      bottom: 431.9928
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 517.8384
+                      x1: 544.1904000000001
+                      y0: 409.0104
+                      y1: 416.84400000000005
+                      top: 424.1592
+                      bottom: 431.9928
+                      end_offset: 1628
+                      page_index: 0
+                      line_number: 22
+                      start_offset: 1622
+                      offset_string: $93.50
+                      offset_string_original: $93.50
+                    selection_bbox:
+                      x0: 517.8384
+                      x1: 544.1904000000001
+                      y0: 409.0104
+                      y1: 416.84400000000005
+                      top: 424.1592
+                      bottom: 431.9928
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  description: Example for an invoice.
+                Invoices(DE):
+                  value:
+                  - id: 4208742
+                    label: 6985
+                    label_text: Anzahl
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282261
+                    offset_string: 1x
+                    offset_string_original: 1x
+                    translated_string: null
+                    normalized: 1x
+                    start_offset: 576
+                    end_offset: 578
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 22.32
+                      x1: 31.68
+                      y0: 700.742
+                      y1: 711.542
+                      top: 322.458
+                      bottom: 333.258
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 22.32
+                      x1: 31.68
+                      y0: 700.742
+                      y1: 711.542
+                      top: 322.458
+                      bottom: 333.258
+                      end_offset: 578
+                      page_index: 0
+                      line_number: 16
+                      start_offset: 576
+                      offset_string: 1x
+                      offset_string_original: 1x
+                    selection_bbox:
+                      x0: 22.32
+                      x1: 31.68
+                      y0: 700.742
+                      y1: 711.542
+                      top: 322.458
+                      bottom: 333.258
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208749
+                    label: 6984
+                    label_text: Bezeichnung
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282261
+                    offset_string: Degliartisti
+                    offset_string_original: Degliartisti
+                    translated_string: null
+                    normalized: Degliartisti
+                    start_offset: 580
+                    end_offset: 592
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 33.602
+                      x1: 92.88
+                      y0: 700.742
+                      y1: 711.542
+                      top: 322.458
+                      bottom: 333.258
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 33.602
+                      x1: 92.88
+                      y0: 700.742
+                      y1: 711.542
+                      top: 322.458
+                      bottom: 333.258
+                      end_offset: 592
+                      page_index: 0
+                      line_number: 16
+                      start_offset: 580
+                      offset_string: Degliartisti
+                      offset_string_original: Degliartisti
+                    selection_bbox:
+                      x0: 33.602
+                      x1: 92.88
+                      y0: 700.742
+                      y1: 711.542
+                      top: 322.458
+                      bottom: 333.258
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208743
+                    label: 6988
+                    label_text: MwSt-Code
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282261
+                    offset_string: A
+                    offset_string_original: A
+                    translated_string: null
+                    normalized: A
+                    start_offset: 607
+                    end_offset: 608
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 130.558
+                      x1: 137.52
+                      y0: 699.871
+                      y1: 711.391
+                      top: 322.609
+                      bottom: 334.129
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 130.558
+                      x1: 137.52
+                      y0: 699.871
+                      y1: 711.391
+                      top: 322.609
+                      bottom: 334.129
+                      end_offset: 608
+                      page_index: 0
+                      line_number: 16
+                      start_offset: 607
+                      offset_string: A
+                      offset_string_original: A
+                    selection_bbox:
+                      x0: 130.558
+                      x1: 137.52
+                      y0: 699.871
+                      y1: 711.391
+                      top: 322.609
+                      bottom: 334.129
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208746
+                    label: 6986
+                    label_text: Einzelpreis
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282261
+                    offset_string: 11,50
+                    offset_string_original: 11,50
+                    translated_string: null
+                    normalized: 11,50
+                    start_offset: 609
+                    end_offset: 614
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 138.96
+                      x1: 164.16
+                      y0: 699.871
+                      y1: 711.391
+                      top: 322.609
+                      bottom: 334.129
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 138.96
+                      x1: 164.16
+                      y0: 699.871
+                      y1: 711.391
+                      top: 322.609
+                      bottom: 334.129
+                      end_offset: 614
+                      page_index: 0
+                      line_number: 16
+                      start_offset: 609
+                      offset_string: 11,50
+                      offset_string_original: 11,50
+                    selection_bbox:
+                      x0: 138.96
+                      x1: 164.16
+                      y0: 699.871
+                      y1: 711.391
+                      top: 322.609
+                      bottom: 334.129
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208747
+                    label: 6987
+                    label_text: Zwischensumme
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282261
+                    offset_string: 11,50
+                    offset_string_original: 11,50
+                    translated_string: null
+                    normalized: 11,50
+                    start_offset: 621
+                    end_offset: 626
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 183.362
+                      x1: 206.878
+                      y0: 701.368
+                      y1: 711.455
+                      top: 322.545
+                      bottom: 332.632
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 183.362
+                      x1: 206.878
+                      y0: 701.368
+                      y1: 711.455
+                      top: 322.545
+                      bottom: 332.632
+                      end_offset: 626
+                      page_index: 0
+                      line_number: 16
+                      start_offset: 621
+                      offset_string: 11,50
+                      offset_string_original: 11,50
+                    selection_bbox:
+                      x0: 183.362
+                      x1: 206.878
+                      y0: 701.368
+                      y1: 711.455
+                      top: 322.545
+                      bottom: 332.632
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208751
+                    label: 6985
+                    label_text: Anzahl
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282262
+                    offset_string: 1x
+                    offset_string_original: 1x
+                    translated_string: null
+                    normalized: 1x
+                    start_offset: 632
+                    end_offset: 634
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 21.6
+                      x1: 33.358
+                      y0: 689.475
+                      y1: 699.073
+                      top: 334.927
+                      bottom: 344.525
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 21.6
+                      x1: 33.358
+                      y0: 689.475
+                      y1: 699.073
+                      top: 334.927
+                      bottom: 344.525
+                      end_offset: 634
+                      page_index: 0
+                      line_number: 17
+                      start_offset: 632
+                      offset_string: 1x
+                      offset_string_original: 1x
+                    selection_bbox:
+                      x0: 21.6
+                      x1: 33.358
+                      y0: 689.475
+                      y1: 699.073
+                      top: 334.927
+                      bottom: 344.525
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208753
+                    label: 6984
+                    label_text: Bezeichnung
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282262
+                    offset_string: Tonno
+                    offset_string_original: Tonno
+                    translated_string: null
+                    normalized: Tonno
+                    start_offset: 635
+                    end_offset: 640
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 34.798
+                      x1: 60.242
+                      y0: 689.475
+                      y1: 699.073
+                      top: 334.927
+                      bottom: 344.525
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 34.798
+                      x1: 60.242
+                      y0: 689.475
+                      y1: 699.073
+                      top: 334.927
+                      bottom: 344.525
+                      end_offset: 640
+                      page_index: 0
+                      line_number: 17
+                      start_offset: 635
+                      offset_string: Tonno
+                      offset_string_original: Tonno
+                    selection_bbox:
+                      x0: 34.798
+                      x1: 60.242
+                      y0: 689.475
+                      y1: 699.073
+                      top: 334.927
+                      bottom: 344.525
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208755
+                    label: 6988
+                    label_text: MwSt-Code
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282262
+                    offset_string: A
+                    offset_string_original: A
+                    translated_string: null
+                    normalized: A
+                    start_offset: 668
+                    end_offset: 669
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 129.838
+                      x1: 137.758
+                      y0: 689.324
+                      y1: 699.641
+                      top: 334.359
+                      bottom: 344.676
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 129.838
+                      x1: 137.758
+                      y0: 689.324
+                      y1: 699.641
+                      top: 334.359
+                      bottom: 344.676
+                      end_offset: 669
+                      page_index: 0
+                      line_number: 17
+                      start_offset: 668
+                      offset_string: A
+                      offset_string_original: A
+                    selection_bbox:
+                      x0: 129.838
+                      x1: 137.758
+                      y0: 689.324
+                      y1: 699.641
+                      top: 334.359
+                      bottom: 344.676
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208756
+                    label: 6986
+                    label_text: Einzelpreis
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282262
+                    offset_string: 12,00
+                    offset_string_original: 12,00
+                    translated_string: null
+                    normalized: 12,00
+                    start_offset: 671
+                    end_offset: 676
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 139.442
+                      x1: 164.398
+                      y0: 689.324
+                      y1: 699.641
+                      top: 334.359
+                      bottom: 344.676
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 139.442
+                      x1: 164.398
+                      y0: 689.324
+                      y1: 699.641
+                      top: 334.359
+                      bottom: 344.676
+                      end_offset: 676
+                      page_index: 0
+                      line_number: 17
+                      start_offset: 671
+                      offset_string: 12,00
+                      offset_string_original: 12,00
+                    selection_bbox:
+                      x0: 139.442
+                      x1: 164.398
+                      y0: 689.324
+                      y1: 699.641
+                      top: 334.359
+                      bottom: 344.676
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208757
+                    label: 6987
+                    label_text: Zwischensumme
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282262
+                    offset_string: 12,00
+                    offset_string_original: 12,00
+                    translated_string: null
+                    normalized: 12,00
+                    start_offset: 683
+                    end_offset: 688
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 183.6
+                      x1: 206.64
+                      y0: 689.899
+                      y1: 699.741
+                      top: 334.259
+                      bottom: 344.101
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 183.6
+                      x1: 206.64
+                      y0: 689.899
+                      y1: 699.741
+                      top: 334.259
+                      bottom: 344.101
+                      end_offset: 688
+                      page_index: 0
+                      line_number: 17
+                      start_offset: 683
+                      offset_string: 12,00
+                      offset_string_original: 12,00
+                    selection_bbox:
+                      x0: 183.6
+                      x1: 206.64
+                      y0: 689.899
+                      y1: 699.741
+                      top: 334.259
+                      bottom: 344.101
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208758
+                    label: 6985
+                    label_text: Anzahl
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282263
+                    offset_string: 1x
+                    offset_string_original: 1x
+                    translated_string: null
+                    normalized: 1x
+                    start_offset: 694
+                    end_offset: 696
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 21.6
+                      x1: 31.68
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 21.6
+                      x1: 31.68
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      end_offset: 696
+                      page_index: 0
+                      line_number: 18
+                      start_offset: 694
+                      offset_string: 1x
+                      offset_string_original: 1x
+                    selection_bbox:
+                      x0: 21.6
+                      x1: 31.68
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208760
+                    label: 6984
+                    label_text: Bezeichnung
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282263
+                    offset_string: Krombacher  Helles
+                    offset_string_original: Krombacher  Helles
+                    translated_string: null
+                    normalized: Krombacher  Helles
+                    start_offset: 698
+                    end_offset: 716
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 33.602
+                      x1: 118.318
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 33.602
+                      x1: 118.318
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      end_offset: 716
+                      page_index: 0
+                      line_number: 18
+                      start_offset: 698
+                      offset_string: Krombacher  Helles
+                      offset_string_original: Krombacher  Helles
+                    selection_bbox:
+                      x0: 33.602
+                      x1: 118.318
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208762
+                    label: 6988
+                    label_text: MwSt-Code
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282263
+                    offset_string: A
+                    offset_string_original: A
+                    translated_string: null
+                    normalized: A
+                    start_offset: 722
+                    end_offset: 723
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 133.92
+                      x1: 140.882
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 133.92
+                      x1: 140.882
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      end_offset: 723
+                      page_index: 0
+                      line_number: 18
+                      start_offset: 722
+                      offset_string: A
+                      offset_string_original: A
+                    selection_bbox:
+                      x0: 133.92
+                      x1: 140.882
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208763
+                    label: 6986
+                    label_text: Einzelpreis
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282263
+                    offset_string: 4,40
+                    offset_string_original: 4,40
+                    translated_string: null
+                    normalized: 4,40
+                    start_offset: 725
+                    end_offset: 729
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 142.56
+                      x1: 164.88
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 142.56
+                      x1: 164.88
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      end_offset: 729
+                      page_index: 0
+                      line_number: 18
+                      start_offset: 725
+                      offset_string: 4,40
+                      offset_string_original: 4,40
+                    selection_bbox:
+                      x0: 142.56
+                      x1: 164.88
+                      y0: 676.982
+                      y1: 687.782
+                      top: 346.218
+                      bottom: 357.018
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208764
+                    label: 6987
+                    label_text: Zwischensumme
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282263
+                    offset_string: 4,40
+                    offset_string_original: 4,40
+                    translated_string: null
+                    normalized: 4,40
+                    start_offset: 738
+                    end_offset: 742
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 187.438
+                      x1: 207.598
+                      y0: 678.581
+                      y1: 687.465
+                      top: 346.535
+                      bottom: 355.419
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 187.438
+                      x1: 207.598
+                      y0: 678.581
+                      y1: 687.465
+                      top: 346.535
+                      bottom: 355.419
+                      end_offset: 742
+                      page_index: 0
+                      line_number: 18
+                      start_offset: 738
+                      offset_string: 4,40
+                      offset_string_original: 4,40
+                    selection_bbox:
+                      x0: 187.438
+                      x1: 207.598
+                      y0: 678.581
+                      y1: 687.465
+                      top: 346.535
+                      bottom: 355.419
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208765
+                    label: 6985
+                    label_text: Anzahl
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282264
+                    offset_string: Ix
+                    offset_string_original: Ix
+                    translated_string: null
+                    normalized: Ix
+                    start_offset: 749
+                    end_offset: 751
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 22.082
+                      x1: 31.68
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 22.082
+                      x1: 31.68
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      end_offset: 751
+                      page_index: 0
+                      line_number: 19
+                      start_offset: 749
+                      offset_string: Ix
+                      offset_string_original: Ix
+                    selection_bbox:
+                      x0: 22.082
+                      x1: 31.68
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208767
+                    label: 6984
+                    label_text: Bezeichnung
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282264
+                    offset_string: Krombacher  Pils  0,4L
+                    offset_string_original: Krombacher  Pils  0,4L
+                    translated_string: null
+                    normalized: Krombacher  Pils  0,4L
+                    start_offset: 753
+                    end_offset: 775
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 33.358
+                      x1: 131.998
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 33.358
+                      x1: 131.998
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      end_offset: 775
+                      page_index: 0
+                      line_number: 19
+                      start_offset: 753
+                      offset_string: Krombacher  Pils  0,4L
+                      offset_string_original: Krombacher  Pils  0,4L
+                    selection_bbox:
+                      x0: 33.358
+                      x1: 131.998
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208768
+                    label: 6988
+                    label_text: MwSt-Code
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282264
+                    offset_string: A
+                    offset_string_original: A
+                    translated_string: null
+                    normalized: A
+                    start_offset: 777
+                    end_offset: 778
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 134.158
+                      x1: 140.638
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 134.158
+                      x1: 140.638
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      end_offset: 778
+                      page_index: 0
+                      line_number: 19
+                      start_offset: 777
+                      offset_string: A
+                      offset_string_original: A
+                    selection_bbox:
+                      x0: 134.158
+                      x1: 140.638
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208770
+                    label: 6986
+                    label_text: Einzelpreis
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282264
+                    offset_string: 4,00
+                    offset_string_original: 4,00
+                    translated_string: null
+                    normalized: 4,00
+                    start_offset: 780
+                    end_offset: 784
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 142.798
+                      x1: 164.398
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 142.798
+                      x1: 164.398
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      end_offset: 784
+                      page_index: 0
+                      line_number: 19
+                      start_offset: 780
+                      offset_string: 4,00
+                      offset_string_original: 4,00
+                    selection_bbox:
+                      x0: 142.798
+                      x1: 164.398
+                      y0: 664.878
+                      y1: 676.161
+                      top: 357.839
+                      bottom: 369.122
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208771
+                    label: 6987
+                    label_text: Zwischensumme
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Einzelleistungen
+                    section_label_id: 1754
+                    section: 282264
+                    offset_string: 4,00
+                    offset_string_original: 4,00
+                    translated_string: null
+                    normalized: 4,00
+                    start_offset: 793
+                    end_offset: 797
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 187.682
+                      x1: 207.36
+                      y0: 666.325
+                      y1: 676.412
+                      top: 357.588
+                      bottom: 367.675
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 187.682
+                      x1: 207.36
+                      y0: 666.325
+                      y1: 676.412
+                      top: 357.588
+                      bottom: 367.675
+                      end_offset: 797
+                      page_index: 0
+                      line_number: 19
+                      start_offset: 793
+                      offset_string: 4,00
+                      offset_string_original: 4,00
+                    selection_bbox:
+                      x0: 187.682
+                      x1: 207.36
+                      y0: 666.325
+                      y1: 676.412
+                      top: 357.588
+                      bottom: 367.675
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208736
+                    label: 6978
+                    label_text: Bruttobetrag
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Quittung
+                    section_label_id: 1751
+                    section: 282260
+                    offset_string: 31,90
+                    offset_string_original: 31,90
+                    translated_string: null
+                    normalized: 31,90
+                    start_offset: 918
+                    end_offset: 923
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 183.362
+                      x1: 208.318
+                      y0: 623.847
+                      y1: 633.927
+                      top: 400.073
+                      bottom: 410.153
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 183.362
+                      x1: 208.318
+                      y0: 623.847
+                      y1: 633.927
+                      top: 400.073
+                      bottom: 410.153
+                      end_offset: 923
+                      page_index: 0
+                      line_number: 22
+                      start_offset: 918
+                      offset_string: 31,90
+                      offset_string_original: 31,90
+                    selection_bbox:
+                      x0: 183.362
+                      x1: 208.318
+                      y0: 623.847
+                      y1: 633.927
+                      top: 400.073
+                      bottom: 410.153
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208737
+                    label: 6978
+                    label_text: Bruttobetrag
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Quittung
+                    section_label_id: 1751
+                    section: 282260
+                    offset_string: 31,90
+                    offset_string_original: 31,90
+                    translated_string: null
+                    normalized: 31,90
+                    start_offset: 1043
+                    end_offset: 1048
+                    accuracy: null
+                    is_correct: true
+                    revised: false
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 82.8
+                      x1: 133.92
+                      y0: 569.994
+                      y1: 588.476
+                      top: 445.524
+                      bottom: 464.006
+                      line_index: 1
+                      page_index: 0
+                    bboxes:
+                    - x0: 82.8
+                      x1: 133.92
+                      y0: 569.994
+                      y1: 588.476
+                      top: 445.524
+                      bottom: 464.006
+                      end_offset: 1048
+                      page_index: 0
+                      line_number: 25
+                      start_offset: 1043
+                      offset_string: 31,90
+                      offset_string_original: 31,90
+                    selection_bbox:
+                      x0: 82.8
+                      x1: 133.92
+                      y0: 569.994
+                      y1: 588.476
+                      top: 445.524
+                      bottom: 464.006
+                      line_index: 1
+                      page_index: 0
+                    custom_offset_string: false
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208739
+                    label: 6980
+                    label_text: Quittungsdatum
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Quittung
+                    section_label_id: 1751
+                    section: 282260
+                    offset_string: 25-Aug-19
+                    offset_string_original: ''
+                    translated_string: null
+                    normalized: 25-Aug-19
+                    start_offset: null
+                    end_offset: null
+                    accuracy: null
+                    is_correct: true
+                    revised: true
+                    created_by: 279
+                    revised_by: null
+                    bbox:
+                      x0: 30.431212488038266
+                      x1: 78.81215825426327
+                      y0: 791.6959293433418
+                      y1: 804.2672759608013
+                      top: 230.5805164449132
+                      bottom: 243.1518630623726
+                      page_index: 0
+                      offset_string: 25-Aug-19
+                    bboxes:
+                    - x0: 30.431212488038266
+                      x1: 78.81215825426327
+                      y0: 791.6959293433418
+                      y1: 804.2672759608013
+                      top: 230.5805164449132
+                      bottom: 243.1518630623726
+                      page_index: 0
+                      offset_string: 25-Aug-19
+                    selection_bbox:
+                      x0: 30.431212488038266
+                      x1: 78.81215825426327
+                      y0: 791.6959293433418
+                      y1: 804.2672759608013
+                      top: 230.5805164449132
+                      bottom: 243.1518630623726
+                      page_index: 0
+                      offset_string: ''
+                    custom_offset_string: true
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: n/a
+                  - id: 4208740
+                    label: 6983
+                    label_text: Uhrzeit
+                    label_data_type: Text
+                    label_threshold: 0.1
+                    section_label_text: Quittung
+                    section_label_id: 1751
+                    section: 282260
+                    offset_string: '21:35'
+                    offset_string_original: ''
+                    translated_string: null
+                    normalized: '21:35'
+                    start_offset: null
+                    end_offset: null
+                    accuracy: null
+                    is_correct: true
+                    revised: true
+                    created_by: 279
+                    revised_by: 279
+                    bbox: {}
+                    bboxes:
+                    - x0: 83.76453852954614
+                      x1: 107.38358291935677
+                      y0: 792.26735418959
+                      y1: 805.0291757557989
+                      top: 229.81861664991567
+                      bottom: 242.58043821612443
+                      page_index: 0
+                      offset_string: '21:35'
+                    selection_bbox:
+                      x0: 83.76453852954614
+                      x1: 107.38358291935677
+                      y0: 792.26735418959
+                      y1: 805.0291757557989
+                      top: 229.81861664991567
+                      bottom: 242.58043821612443
+                      page_index: 0
+                      offset_string: ''
+                    custom_offset_string: true
+                    get_created_by: clh@konfuzio.com
+                    get_revised_by: clh@konfuzio.com
+                  summary: Invoices (DE)
+                  description: Example for an invoice (German).
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+    post:
+      operationId: projects_docs_annotations_create
+      description: |-
+        If you want to create annotations based on custom extraction results, set the following attributes in the         post request:
+        - `label`
+        - `start_offset`
+        - `end_offset`
+        - `accuracy`
+        - `section_label_id`
+
+        Use [the project endpoint](#operation/projects_retrieve) to get the labels and section_labels.
+      summary: Create a new annotation in a document
+      parameters:
+      - in: path
+        name: doc_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      - in: path
+        name: project_id
+        schema:
+          type: integer
+        description: A unique integer value identifying the project.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SequenceAnnotationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SequenceAnnotationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SequenceAnnotationRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SequenceAnnotation'
+          description: Resource created.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+        '400':
+          description: Bad request. See validation error.
+  /api/projects/{project_id}/docs/{doc_id}/paragraph/:
+    get:
+      operationId: projects_docs_paragraph_retrieve
+      description: |-
+        The return value represents the lines per paragraph per page.
+        Therefore the return value is of type `List[List[Dict]]`.
+      summary: Get paragraphs for a document
+      parameters:
+      - in: path
+        name: doc_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      - in: query
+        name: height
+        schema:
+          type: integer
+        description: Force overwrite of dynamically calculated height used for paragraph
+          splitting.
+      - in: path
+        name: project_id
+        schema:
+          type: integer
+        description: A unique integer value identifying the project.
+        required: true
+      tags:
+      - projects
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+              examples:
+                Example:
+                  value:
+                  - - - start_offset: 17
+                        end_offset: 36
+                        text: Volksbank  FildereG
+                    - - start_offset: 54
+                        end_offset: 71
+                        text: 70794 Filderstadt
+                    - - start_offset: 89
+                        end_offset: 113
+                        text: www.volksbank-#filder.de
+                    - - start_offset: 161
+                        end_offset: 177
+                        text: VR  Konto Direkt
+                      - start_offset: 225
+                        end_offset: 263
+                        text: EUR- Kont o      Kontonummer 252335007
+                    - - start_offset: 273
+                        end_offset: 292
+                        text: Volksbank Filder eG
+                      - start_offset: 340
+                        end_offset: 377
+                        text: Kont oauszug               N.  7/2019
+                      - start_offset: 387
+                        end_offset: 417
+                        text: Postfach 1180- 73761 Neuhausen
+                    - - start_offset: 465
+                        end_offset: 513
+                        text: erstellt am 31.07.2019 21:36  Bl att   1  von  3
+                    - - start_offset: 561
+                        end_offset: 616
+                        text: 'IBAN: DE29  6116  1696  0252  3350  07 BIC: GENODESINHB'
+                      - start_offset: 626
+                        end_offset: 723
+                        text: Herrn und Frau                             Sollzins  gedul
+                          dete  Überziehung  p.a.    10,27000  %
+                      - start_offset: 771
+                        end_offset: 820
+                        text: 'Gesant umsat z:      7.126,90  S      3.780,00  H'
+                      - start_offset: 830
+                        end_offset: 861
+                        text: Benjamin Mack u.Sandra Weiberle
+                      - start_offset: 871
+                        end_offset: 885
+                        text: Brunnengasse 9
+                      - start_offset: 933
+                        end_offset: 960
+                        text: 'Ihr Berater: Sabine  Döring'
+                      - start_offset: 970
+                        end_offset: 987
+                        text: 70794 Filderstadt
+                      - start_offset: 1036
+                        end_offset: 1056
+                        text: 'Tel: 07158  1818-502'
+                    - - start_offset: 1062
+                        end_offset: 1082
+                        text: Bu- Tag      Vorgang
+                    - - start_offset: 1116
+                        end_offset: 1178
+                        text: al ter Kontostand  vom 28. 06. 2019                 6.467,71
+                          H
+                      - start_offset: 1184
+                        end_offset: 1275
+                        text: '01. 07. 01: 07.:  Dauerauftrag  PN: 931.                                           625,00
+                          H'
+                      - start_offset: 1291
+                        end_offset: 1331
+                        text: '‚Joerg:  Schul z und.  Elisabeth Schul z'
+                      - start_offset: 1348
+                        end_offset: 1406
+                        text: 'Mete  +  Nebenkosten  2  IBAN: DE31611500200008252434  BIC'
+                      - start_offset: 1423
+                        end_offset: 1434
+                        text: '-  ESSLDE66'
+                      - start_offset: 1440
+                        end_offset: 1532
+                        text: '01.07. 01. 07. Dauerauftrag  PN: 900                                             680,
+                          00.  H'
+                      - start_offset: 1549
+                        end_offset: 1564
+                        text: ‚Benjamin  Mick
+                      - start_offset: 1581
+                        end_offset: 1637
+                        text: 'Mete  Benjamin  und  RamonaMack IBAN:  DE476116169605482'
+                      - start_offset: 1653
+                        end_offset: 1678
+                        text: '55008  BIC:  "GENODESINHB'
+                      - start_offset: 1684
+                        end_offset: 1686
+                        text: '0.'
+                      - start_offset: 1694
+                        end_offset: 1780
+                        text: '07. 01.07. Dauerauftrag  PN: 931                                              855,00
+                          H'
+                      - start_offset: 1795
+                        end_offset: 1831
+                        text: ‘Joerg Schul z  und Elisabeth Schulz
+                      - start_offset: 1845
+                        end_offset: 1905
+                        text: '.  - »METE+NK.  1.BAN:  DE31611500200008252434BIC:
+                          ‚ESSLDES6'
+                      - start_offset: 1919
+                        end_offset: 1942
+                        text: '07:                  nn'
+                      - start_offset: 1948
+                        end_offset: 2036
+                        text: 01. 07. 01.   Dauer auftrag  PN:931                                           890,00  .H
+                      - start_offset: 2053
+                        end_offset: 2070
+                        text: Christian  Schadt
+                      - start_offset: 2085
+                        end_offset: 2145
+                        text: '-  Mete Brunnengasse  9,  ‘Schadt IBAN:  DE89611500200102839'
+                      - start_offset: 2162
+                        end_offset: 2179
+                        text: '485 BIC: ESSLDE66'
+                      - start_offset: 2185
+                        end_offset: 2269
+                        text: '01.07. 01. 07. Basi slastschrift PN: 931                                   175,00  S'
+                      - start_offset: 2286
+                        end_offset: 2317
+                        text: Benjamin  Mick  Sandra  Wiberle
+                      - start_offset: 2334
+                        end_offset: 2375
+                        text: Darl.-Leistung  6000334921        Tilgung
+                      - start_offset: 2396
+                        end_offset: 2445
+                        text: 136, 66  EUR  Zinsen              38,34  EUR  MRE
+                      - start_offset: 2462
+                        end_offset: 2517
+                        text: 'F: E600033492124. 08. 20170001 CRED: DE83ZZZ00000015256'
+                      - start_offset: 2534
+                        end_offset: 2588
+                        text: 'IBAN: DE40620500006000334921 BIC: HEISDE66  ABM: Benja'
+                      - start_offset: 2605
+                        end_offset: 2630
+                        text: mn  Mack  Sandra  Wiberle
+                      - start_offset: 2636
+                        end_offset: 2677
+                        text: '01. 07. 01. 07. Basi slastschrift PN: 931'
+                      - start_offset: 2747
+                        end_offset: 2756
+                        text: 300,00  S
+                      - start_offset: 2773
+                        end_offset: 2804
+                        text: Benjanin  Mack  Sandra  Wiberle
+                      - start_offset: 2821
+                        end_offset: 2861
+                        text: Darl.-Leistung  6000334945       Tilgung
+                      - start_offset: 2882
+                        end_offset: 2929
+                        text: 234, 77  EUR  Zinsen              65,23 EUR  ME
+                      - start_offset: 2946
+                        end_offset: 3001
+                        text: 'F: E600033494524. 08. 20170001 CRED: DE83ZZZ00000015256'
+                      - start_offset: 3018
+                        end_offset: 3073
+                        text: 'IBAN: DE71620500006000334945  BIC: HEISDE66  ABM: Benja'
+                      - start_offset: 3090
+                        end_offset: 3116
+                        text: mn  Mack  Sandra  Weiberle
+                      - start_offset: 3122
+                        end_offset: 3207
+                        text: '01. 07. 01. 07. Basi slastschrift PN: 931                                   311,00  S'
+                      - start_offset: 3224
+                        end_offset: 3252
+                        text: Stadt Filderstadt Stadtwerke
+                      - start_offset: 3269
+                        end_offset: 3327
+                        text: 'Brunnengasse  9, Brunnengasse  9, Abschlag  311,00
+                          EREF: B'
+                      - start_offset: 3344
+                        end_offset: 3401
+                        text: '30127335  KD1011048/ 6012259  MREF: 6012259001 CRED:
+                          DE95'
+                      - start_offset: 3418
+                        end_offset: 3473
+                        text: 'SWF00000000781 IBAN: DE66612623450000057002  BIC: GENOD'
+                      - start_offset: 3490
+                        end_offset: 3497
+                        text: ES1 BBF
+                      - start_offset: 3503
+                        end_offset: 3587
+                        text: '01. 07. 01. 07. Dauer auftrag PN: 900                                      800,00  S'
+                      - start_offset: 3604
+                        end_offset: 3615
+                        text: Helmut Mack
+                      - start_offset: 3632
+                        end_offset: 3687
+                        text: 'Leibrente  /*DA-1* IBAN: DE38611500200010739000 BIC:
+                          ES'
+                    - - start_offset: 3734
+                        end_offset: 3785
+                        text: Übertrag  auf Blatt 2                    7.931,71 H
+                      - start_offset: 3786
+                        end_offset: 3790
+                        text: '1851'
+                      - start_offset: 3791
+                        end_offset: 3794
+                        text: '000'
+                      - start_offset: 3795
+                        end_offset: 3804
+                        text: K00008062
+                      - start_offset: 3822
+                        end_offset: 3870
+                        text: Bitte beachten Siedie Hinweise aufder Rückseite!
+                      - start_offset: 3871
+                        end_offset: 3873
+                        text: SM
+                  - - - start_offset: 3891
+                        end_offset: 3910
+                        text: Voiksbank  FildereG
+                    - - start_offset: 3928
+                        end_offset: 3945
+                        text: 70794 Filderstadt
+                    - - start_offset: 3963
+                        end_offset: 3987
+                        text: www.volksbank-#filder.de
+                    - - start_offset: 4035
+                        end_offset: 4051
+                        text: VR  Konto Direkt
+                      - start_offset: 4100
+                        end_offset: 4137
+                        text: EUR- Kont 0      Kontonumer 252335007
+                      - start_offset: 4143
+                        end_offset: 4176
+                        text: Benjamin Nack u. Sandra  Veiberle
+                    - - start_offset: 4225
+                        end_offset: 4262
+                        text: Kont oauszug               N.  7/2019
+                      - start_offset: 4310
+                        end_offset: 4358
+                        text: erstellt am 31.07.2019 21:36  Bl att   2  von  3
+                    - - start_offset: 4364
+                        end_offset: 4385
+                        text: Bu-Tag  Wert  Vorgang
+                      - start_offset: 4425
+                        end_offset: 4477
+                        text: Übertrag  von  Blatt 1                    7.931,71 H
+                      - start_offset: 4494
+                        end_offset: 4503
+                        text: SLDESEXXX
+                      - start_offset: 4509
+                        end_offset: 4597
+                        text: '02.07. 02.07. Dauerauftrag PN: 931                                              200,00
+                          H'
+                      - start_offset: 4614
+                        end_offset: 4646
+                        text: Benjamin  Mick  und Ramona  Mick
+                      - start_offset: 4663
+                        end_offset: 4718
+                        text: 'Abschlag Nebenkosten IBAN: DEO5120300001006626855  BIC:'
+                      - start_offset: 4736
+                        end_offset: 4748
+                        text: BYLADEM! 001
+                      - start_offset: 4754
+                        end_offset: 4839
+                        text: '05.07. 05.07. Euro- Über wei sung PN: 926                                 4.760,00  S'
+                      - start_offset: 4856
+                        end_offset: 4870
+                        text: Benjanin  Mack
+                      - start_offset: 4887
+                        end_offset: 4945
+                        text: 'Rückzahl ung  2019  TAN: 555970 IBAN: DE476116169605482550'
+                      - start_offset: 4962
+                        end_offset: 4982
+                        text: '08  BIC: GENCDESINHB'
+                      - start_offset: 4988
+                        end_offset: 5052
+                        text: 15.07.  15.07.  Dauerauftrag  PN 900-000.  ln   =   ll5830,00  H
+                      - start_offset: 5058
+                        end_offset: 5075
+                        text: a    Helmut. Mack
+                      - start_offset: 5081
+                        end_offset: 5139
+                        text: '002.  Mete  IBAN:  DE62611616960080150004BIC:  GENCDESINHB'
+                      - start_offset: 5145
+                        end_offset: 5227
+                        text: '15.07. 15.07. Basislastschrift PN: 931                                   282,00  S'
+                      - start_offset: 5244
+                        end_offset: 5251
+                        text: MONTANA
+                      - start_offset: 5268
+                        end_offset: 5324
+                        text: ABPI an6100002200, VK2254025, Gas  282.00 EUR, Brunnenga
+                      - start_offset: 5341
+                        end_offset: 5398
+                        text: 'sse  9, Filderstadt 70794  EREF: 022001467424  NREF:
+                          6000'
+                      - start_offset: 5415
+                        end_offset: 5469
+                        text: '22540250001 CRED: DE19VEC00000004380 IBAN: DE316005010'
+                      - start_offset: 5486
+                        end_offset: 5515
+                        text: '10004091637  BIC: SOLADEST600'
+                      - start_offset: 5521
+                        end_offset: 5603
+                        text: '19.07. 19.07. Basislastschrift PN: 931                                    21,00  S'
+                      - start_offset: 5620
+                        end_offset: 5647
+                        text: EnBW Energie  Bad- Wertt AG
+                      - start_offset: 5664
+                        end_offset: 5721
+                        text: '8190137284  Strom ÄAbschl agsforderung EREF: B22500028893'
+                      - start_offset: 5739
+                        end_offset: 5793
+                        text: '8190137284  NREF: V0400051955321 CRED: DE6900000000084'
+                      - start_offset: 5810
+                        end_offset: 5862
+                        text: '184  I BAN: DE56600501017402051588  BIC: SCLADEST600'
+                      - start_offset: 5868
+                        end_offset: 5950
+                        text: '30.07. 30.07. Basislastschrift PN: 931                                   175,00  S'
+                      - start_offset: 5967
+                        end_offset: 5999
+                        text: Benjanrin  Mack  Sandra  Wiberle
+                      - start_offset: 6016
+                        end_offset: 6057
+                        text: Darl.-Leistung  6000334921        Tilgung
+                      - start_offset: 6078
+                        end_offset: 6125
+                        text: 136, 79 EUR  Zinsen              38,21 EUR  MRE
+                      - start_offset: 6142
+                        end_offset: 6199
+                        text: 'F: E600033492124. 08. 20170001 CRED: DE8S3SZZZ00000015256'
+                      - start_offset: 6216
+                        end_offset: 6271
+                        text: 'I BAN: DE40620500006000334921 BIC: HEISDE66  ABM: Benja'
+                      - start_offset: 6288
+                        end_offset: 6313
+                        text: mn  Mack  Sandra  Wiberle
+                      - start_offset: 6319
+                        end_offset: 6401
+                        text: '30.07. 30.07. Basislastschrift PN: 931                                   300,00  S'
+                      - start_offset: 6418
+                        end_offset: 6449
+                        text: Benjamin  Mick  Sandra  Wiberle
+                      - start_offset: 6466
+                        end_offset: 6506
+                        text: Darl.-Leistung  6000334945       Tilgung
+                      - start_offset: 6527
+                        end_offset: 6577
+                        text: 235, 04  EUR  Zinsen              64,96  EUR  NMRE
+                      - start_offset: 6594
+                        end_offset: 6649
+                        text: 'F: E600033494524. 08. 20170001 CRED: DES3ZZZ00000015256'
+                      - start_offset: 6666
+                        end_offset: 6721
+                        text: 'IBAN: DE71620500006000334945  BIC: HEISDE66  ABW: Benja'
+                      - start_offset: 6738
+                        end_offset: 6764
+                        text: mn  Mack  Sandra  Weiberle
+                      - start_offset: 6770
+                        end_offset: 6854
+                        text: '31.07. 31.07. Abschluss It. Anlage  1 PN: 905                                2,90  S'
+                    - - start_offset: 6923
+                        end_offset: 6983
+                        text: neuer Kontostand  vom 31.07.2019                  3.120,81
+                          H
+                    - - start_offset: 7041
+                        end_offset: 7090
+                        text: Vorverkauf "Flarmmende Sterne” ab  sofort bei uns
+                      - start_offset: 7113
+                        end_offset: 7164
+                        text: zum Vorzugspreis bei Vorlage der goldenen  girocard
+                    - - start_offset: 7172
+                        end_offset: 7176
+                        text: '1851'
+                      - start_offset: 7177
+                        end_offset: 7180
+                        text: '000'
+                      - start_offset: 7181
+                        end_offset: 7251
+                        text: K00008062             Bitte beachten Siedie Hinweise
+                          aufder Rückseite!
+                  - - - start_offset: 7269
+                        end_offset: 7288
+                        text: Volksbank Filder eG
+                      - start_offset: 7306
+                        end_offset: 7323
+                        text: 70794 Filderstadt
+                      - start_offset: 7341
+                        end_offset: 7364
+                        text: www.volksbank-filder.de
+                    - - start_offset: 7413
+                        end_offset: 7428
+                        text: VR Konto Direkt
+                      - start_offset: 7477
+                        end_offset: 7513
+                        text: EUR-Konto     Kontonummer  252335007
+                      - start_offset: 7519
+                        end_offset: 7550
+                        text: Benjamin Mack u.Sandra Weiberle
+                    - - start_offset: 7599
+                        end_offset: 7637
+                        text: Kontoauszug               Nr.   7/2019
+                      - start_offset: 7686
+                        end_offset: 7736
+                        text: erstellt am  31.07.2019 21:36  Blatt     3  von  3
+                    - - start_offset: 7742
+                        end_offset: 7762
+                        text: Bu-Tag  Wert Vorgang
+                      - start_offset: 7768
+                        end_offset: 7776
+                        text: Anlage 1
+                      - start_offset: 7782
+                        end_offset: 7807
+                        text: 'Buchungstag:   31.07.2019'
+                      - start_offset: 7813
+                        end_offset: 7838
+                        text: 'Wert:          31.07.2019'
+                      - start_offset: 7844
+                        end_offset: 7909
+                        text: Kontoabschluss vom 01.07.2019 bis 31.07.2019 für Konto  252335007
+                      - start_offset: 7915
+                        end_offset: 8005
+                        text: '          GRUNDPREIS                                      bis
+                          31.07.                2,90 S'
+                    - - start_offset: 8011
+                        end_offset: 8048
+                        text: Rechnung Nr.  0252335007.20190731.001
+                      - start_offset: 8054
+                        end_offset: 8079
+                        text: USt. IdNr. - DE 145341721
+                      - start_offset: 8085
+                        end_offset: 8119
+                        text: USt.-befreite Finanzdienstleistung
+                    - - start_offset: 8125
+                        end_offset: 8215
+                        text: '                                 Summe Abschlussposten
+                          in EUR                       2,90 S'
+                    - - start_offset: 8216
+                        end_offset: 8220
+                        text: '1851'
+                      - start_offset: 8221
+                        end_offset: 8224
+                        text: '000'
+                      - start_offset: 8225
+                        end_offset: 8297
+                        text: K00008062             Bitte beachten Sie die Hinweise
+                          auf der Rückseite!
+                  - - - start_offset: 8298
+                        end_offset: 8339
+                        text: Sehr geehrte Kundin, sehr geehrter Kunde,
+                    - - start_offset: 8340
+                        end_offset: 8473
+                        text: 'Sie  haben  eine Bankmitteilung  erhalten, z. B. einen  Kontoauszug,
+                          einen  Sparkontoauszug  oder  eine  Dividendenabrechnung.
+                          Bitte '
+                      - start_offset: 8474
+                        end_offset: 8612
+                        text: 'prüfen  Sie diese genau: Ist alles korrekt? Falls  nicht,
+                          sprechen Sie uns bitte an. Damit Sie immer gut  informiert
+                          sind und wissen, wie '
+                      - start_offset: 8613
+                        end_offset: 8715
+                        text: 'Sie Ihre Bankmitteilung "richtig lesen", haben wir
+                          diese nützlichen Hinweise für Sie zusammengestellt:'
+                    - - start_offset: 8716
+                        end_offset: 8850
+                        text: Falls  umseitig Bankdienstleistungen  aufgeführt sind,
+                          sind  diese umsatzsteuerfrei - sofern  nichts  Abweichendes
+                          angegeben ist.  Der
+                      - start_offset: 8851
+                        end_offset: 8983
+                        text: im  Kontoauszug  ausgewiesene   Betrag  muss  nicht  dem  tatsächlichen  Kontoguthaben  entsprechen,  weil
+                          z. B.  die   Wertstellung
+                      - start_offset: 8984
+                        end_offset: 9116
+                        text: einzelner  Buchungen  nicht  berücksichtigt wurde  oder
+                          noch Zinsen für  eine Kontoüberziehung  bei einer Verfügung
+                          anfallen können.
+                    - - start_offset: 9117
+                        end_offset: 9136
+                        text: Rechnungsabschlüsse
+                      - start_offset: 9137
+                        end_offset: 9203
+                        text: Ihr Kontoauszug ist mit dem Hinweis "Rechnungsabschluss"
+                          versehen?
+                      - start_offset: 9204
+                        end_offset: 9337
+                        text: Dann  haben wir  für Ihr Konto  einen Rechnungsabschluss  durchgeführt,
+                          einschließlich  Zinsen und  Entgelte. Alle weiteren, nach
+                          dem
+                      - start_offset: 9338
+                        end_offset: 9473
+                        text: Erstellungsdatum   dieser   Mitteilung   anfallenden   Umsätze   und   Kontoauszüge   werden   erst   in   der   folgenden   Abrechnung
+                      - start_offset: 9474
+                        end_offset: 9584
+                        text: berücksichtigt - auch wenn sie sich auf den Abrechnungssaldo
+                          des abgelaufenen Abrechnungszeitraumes auswirken.
+                      - start_offset: 9585
+                        end_offset: 9678
+                        text: Korrekturen werden gekennzeichnet. Den Rechnungsabschluss
+                          können Sie beim Finanzamt vorlegen.
+                    - - start_offset: 9679
+                        end_offset: 9691
+                        text: Einwendungen
+                      - start_offset: 9692
+                        end_offset: 9817
+                        text: Sie  haben  Einwendungen  gegen den  Rechnungsabschluss
+                          Ihres Kontokorrentkontos oder  den Inhalt des  Sparkontoauszugs?
+                          Dann
+                      - start_offset: 9818
+                        end_offset: 9939
+                        text: haben Sie nach Erhalt sechs Wochen Zeit, uns schriftlich
+                          zu informieren. Sonst gilt der Rechnungsabschluss als genehmigt.
+                    - - start_offset: 9940
+                        end_offset: 9955
+                        text: Einzugsaufträge
+                      - start_offset: 9956
+                        end_offset: 10088
+                        text: Einzugspapiere  wie  z. B.  Schecks  und  Lastschriften  werden  unter  dem  Vorbehalt  des  Eingangs  gutgeschrieben,
+                          und zwar auch
+                      - start_offset: 10089
+                        end_offset: 10143
+                        text: 'dann, wenn diese Papiere bei uns selbst zahlbar sind. '
+                      - start_offset: 10144
+                        end_offset: 10280
+                        text: 'Schecks  und  Lastschriften  sind  erst  eingelöst,
+                          wenn  die  Belastungsbuchung  nicht  spätestens  am  zweiten  Bankarbeitstag  -
+                          bei '
+                      - start_offset: 10281
+                        end_offset: 10415
+                        text: Lastschriften  im  SEPA-Firmen-Lastschriftverfahren  nicht  spätestens  am
+                          dritten  Bankarbeitstag  -  nach ihrer  Vornahme rückgängig
+                      - start_offset: 10416
+                        end_offset: 10550
+                        text: gemacht  wird.  Barschecks  sind  bereits  mit  Zahlung
+                          an  den Scheckvorleger  eingelöst. Schecks  sind auch  schon  dann  eingelöst,
+                      - start_offset: 10551
+                        end_offset: 10603
+                        text: wenn wir im Einzelfall eine Bezahltmeldung absenden.
+                    - - start_offset: 10604
+                        end_offset: 10612
+                        text: Guthaben
+                      - start_offset: 10613
+                        end_offset: 10734
+                        text: Ihr Guthaben ist durch das Einlagensicherungsgesetz
+                          gesichert und entschädigungsfähig. Nähere Informationen
+                          finden Sie im
+                      - start_offset: 10735
+                        end_offset: 10772
+                        text: '"Informationsbogen für den Einleger".'
+                    - - start_offset: 10773
+                        end_offset: 10854
+                        text: Sie haben noch Fragen? Dann kontaktieren Sie uns bitte.
+                          Wir sind gern für Sie da.
+                    - - start_offset: 10855
+                        end_offset: 10878
+                        text: Mit freundlichen Grüßen
+                      - start_offset: 10879
+                        end_offset: 10888
+                        text: Ihre Bank
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+  /api/projects/{project_id}/docs/{doc_id}/segmentation/:
+    get:
+      operationId: projects_docs_segmentation_retrieve
+      description: |-
+        The return value represents the segmentation bounding boxes per page.
+        Therefore the return value is of type `List[List[Dict]]`.
+      summary: Get segmentation for a document
+      parameters:
+      - in: path
+        name: doc_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this document.
+        required: true
+      - in: query
+        name: height
+        schema:
+          type: integer
+        description: Force overwrite of dynamically calculated height used for paragraph
+          splitting.
+      - in: path
+        name: project_id
+        schema:
+          type: integer
+        description: A unique integer value identifying the project.
+        required: true
+      tags:
+      - projects
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+              examples:
+                Example:
+                  value:
+                  - - label: title
+                      x0: 819.5806884765625
+                      y0: 349.34722900390625
+                      x1: 980.8678588867188
+                      y1: 379.1153564453125
+                    - label: text
+                      x0: 156.77749633789062
+                      y0: 465.3046569824219
+                      x1: 524.7767944335938
+                      y1: 565.6771240234375
+                    - label: text
+                      x0: 822.9165649414062
+                      y0: 439.15777587890625
+                      x1: 1420.0904541015625
+                      y1: 512.7224731445312
+                    - label: title
+                      x0: 819.0916137695312
+                      y0: 244.75173950195312
+                      x1: 1033.6971435546875
+                      y1: 275.96002197265625
+                    - label: text
+                      x0: 96.28544616699219
+                      y0: 755.7457275390625
+                      x1: 364.0621032714844
+                      y1: 780.16455078125
+                    - label: text
+                      x0: 819.8599853515625
+                      y0: 530.3310546875
+                      x1: 1125.201904296875
+                      y1: 574.2381591796875
+                    - label: title
+                      x0: 1178.7021484375
+                      y0: 1459.79931640625
+                      x1: 1288.300048828125
+                      y1: 1487.0948486328125
+                    - label: text
+                      x0: 820.77880859375
+                      y0: 383.4710388183594
+                      x1: 1360.683837890625
+                      y1: 407.29254150390625
+                    - label: table
+                      x0: 75.60861206054688
+                      y0: 694.4261474609375
+                      x1: 1411.7591552734375
+                      y1: 1944.4774169921875
+                    - label: text
+                      x0: 158.54278564453125
+                      y0: 339.9664001464844
+                      x1: 380.4685974121094
+                      y1: 373.5160827636719
+                    - label: text
+                      x0: 280.9150390625
+                      y0: 1901.904296875
+                      x1: 1000.6023559570312
+                      y1: 1928.244873046875
+                    - label: title
+                      x0: 1047.723876953125
+                      y0: 275.2652893066406
+                      x1: 1356.904296875
+                      y1: 304.8038024902344
+                  - - label: title
+                      x0: 95.2390365600586
+                      y0: 304.5630798339844
+                      x1: 553.1531982421875
+                      y1: 334.3319396972656
+                    - label: title
+                      x0: 1310.931396484375
+                      y0: 549.08642578125
+                      x1: 1420.54541015625
+                      y1: 576.6663208007812
+                    - label: title
+                      x0: 678.5590209960938
+                      y0: 491.39794921875
+                      x1: 939.259521484375
+                      y1: 519.0867309570312
+                    - label: text
+                      x0: 387.5299377441406
+                      y0: 1753.3037109375
+                      x1: 1122.9576416015625
+                      y1: 1810.9757080078125
+                    - label: text
+                      x0: 97.78948974609375
+                      y0: 461.38092041015625
+                      x1: 365.7161865234375
+                      y1: 486.1904296875
+                    - label: title
+                      x0: 387.6702880859375
+                      y0: 1752.76904296875
+                      x1: 1128.7467041015625
+                      y1: 1811.9547119140625
+                    - label: title
+                      x0: 1177.66796875
+                      y0: 872.6148681640625
+                      x1: 1287.19482421875
+                      y1: 899.6795654296875
+                    - label: title
+                      x0: 819.0304565429688
+                      y0: 244.72898864746094
+                      x1: 1033.8194580078125
+                      y1: 276.1030578613281
+                    - label: table
+                      x0: 81.76970672607422
+                      y0: 324.422119140625
+                      x1: 1413.5067138671875
+                      y1: 1682.2867431640625
+                    - label: title
+                      x0: 1284.80615234375
+                      y0: 493.0645751953125
+                      x1: 1420.25439453125
+                      y1: 519.03173828125
+                    - label: title
+                      x0: 819.1215209960938
+                      y0: 349.2685546875
+                      x1: 980.9390258789062
+                      y1: 379.2439270019531
+                    - label: title
+                      x0: 1191.9208984375
+                      y0: 1048.009765625
+                      x1: 1286.6566162109375
+                      y1: 1076.3544921875
+                    - label: text
+                      x0: 819.0223388671875
+                      y0: 384.1025390625
+                      x1: 1265.71875
+                      y1: 407.2920227050781
+                    - label: title
+                      x0: 1046.51416015625
+                      y0: 274.99658203125
+                      x1: 1357.494384765625
+                      y1: 304.8399658203125
+                  - - label: title
+                      x0: 819.1456909179688
+                      y0: 349.4043273925781
+                      x1: 981.0277099609375
+                      y1: 379.0100402832031
+                    - label: text
+                      x0: 527.93017578125
+                      y0: 785.3423461914062
+                      x1: 906.378662109375
+                      y1: 813.3711547851562
+                    - label: title
+                      x0: 95.86388397216797
+                      y0: 304.6461181640625
+                      x1: 552.1786499023438
+                      y1: 334.5080261230469
+                    - label: text
+                      x0: 94.41395568847656
+                      y0: 663.6476440429688
+                      x1: 586.08642578125
+                      y1: 752.51171875
+                    - label: title
+                      x0: 818.561279296875
+                      y0: 245.37908935546875
+                      x1: 1033.888916015625
+                      y1: 276.6947937011719
+                    - label: text
+                      x0: 820.69287109375
+                      y0: 383.0755615234375
+                      x1: 1377.780517578125
+                      y1: 406.87384033203125
+                    - label: text
+                      x0: 86.38909912109375
+                      y0: 575.6151733398438
+                      x1: 977.0043334960938
+                      y1: 638.8802490234375
+                  - - label: text
+                      x0: 139.4312744140625
+                      y0: 778.9423828125
+                      x1: 1345.7496337890625
+                      y1: 895.83203125
+                    - label: text
+                      x0: 139.83993530273438
+                      y0: 559.1170043945312
+                      x1: 1352.2957763671875
+                      y1: 630.1995239257812
+                    - label: title
+                      x0: 136.61727905273438
+                      y0: 751.1283569335938
+                      x1: 334.3009948730469
+                      y1: 774.318603515625
+                    - label: text
+                      x0: 138.9066925048828
+                      y0: 656.3518676757812
+                      x1: 1354.5469970703125
+                      y1: 727.0658569335938
+                    - label: text
+                      x0: 131.308837890625
+                      y0: 1236.1920166015625
+                      x1: 1289.51171875
+                      y1: 1285.2471923828125
+                    - label: text
+                      x0: 142.707763671875
+                      y0: 942.8753662109375
+                      x1: 1359.998779296875
+                      y1: 992.0863037109375
+                    - label: title
+                      x0: 135.79298400878906
+                      y0: 1017.5874633789062
+                      x1: 280.7193908691406
+                      y1: 1041.4794921875
+                    - label: title
+                      x0: 135.9972381591797
+                      y0: 1212.095703125
+                      x1: 223.89007568359375
+                      y1: 1236.5787353515625
+                    - label: text
+                      x0: 136.62049865722656
+                      y0: 1074.113525390625
+                      x1: 1366.1802978515625
+                      y1: 1187.8623046875
+                    - label: title
+                      x0: 136.45668029785156
+                      y0: 918.9598388671875
+                      x1: 266.7303771972656
+                      y1: 943.72705078125
+                    - label: text
+                      x0: 149.7864532470703
+                      y0: 1042.1661376953125
+                      x1: 1363.1668701171875
+                      y1: 1090.46728515625
+                    - label: title
+                      x0: 133.87425231933594
+                      y0: 1309.017333984375
+                      x1: 888.8733520507812
+                      y1: 1332.7271728515625
+                    - label: text
+                      x0: 135.5773162841797
+                      y0: 1353.9578857421875
+                      x1: 355.1651611328125
+                      y1: 1404.290771484375
+                    - label: title
+                      x0: 135.23143005371094
+                      y0: 507.0092468261719
+                      x1: 525.9764404296875
+                      y1: 530.1234741210938
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '403':
+          description: Permission denied. You don't have access to this resource.
+        '404':
+          description: Not found.
+  /api/token-auth/:
+    post:
+      operationId: token_auth_create
+      description: ''
+      tags:
+      - token-auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthTokenRequest'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: Success.
+        '500':
+          description: Internal server error. Please contact support.
+        '400':
+          description: Bad request. See validation error.
+components:
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        token:
+          type: string
+          readOnly: true
+      required:
+      - token
+    AuthTokenRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - username
+    CreateDocumentSerializerV2:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project:
+          type: integer
+        data_file_name:
+          type: string
+          readOnly: true
+        dataset_status:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          type: integer
+          description: |-
+            * `0` — None
+            * `1` — Preparation
+            * `2` — Training
+            * `3` — Test
+            * `4` — Excluded
+          minimum: 0
+          maximum: 2147483647
+        callback_url:
+          type: string
+          format: uri
+          nullable: true
+          description: The callback URL can be specified when using the API.
+          maxLength: 200
+        sync:
+          type: boolean
+        extraction_url:
+          type: string
+          readOnly: true
+      required:
+      - data_file_name
+      - extraction_url
+      - id
+      - project
+    CreateDocumentSerializerV2Request:
+      type: object
+      properties:
+        project:
+          type: integer
+        data_file:
+          type: string
+          format: binary
+          writeOnly: true
+        dataset_status:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          type: integer
+          description: |-
+            * `0` — None
+            * `1` — Preparation
+            * `2` — Training
+            * `3` — Test
+            * `4` — Excluded
+          minimum: 0
+          maximum: 2147483647
+        callback_url:
+          type: string
+          format: uri
+          nullable: true
+          description: The callback URL can be specified when using the API.
+          maxLength: 200
+        sync:
+          type: boolean
+      required:
+      - data_file
+      - project
+    DocumentMeta:
+      type: object
+      description: Use in training package to get meta data for documents within a
+        project.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        number_of_pages:
+          type: integer
+          maximum: 2147483647
+          nullable: true
+          minimum: 0
+        callback_url:
+          type: string
+          format: uri
+          nullable: true
+          description: The callback URL can be specified when using the API.
+          maxLength: 200
+        callback_status_code:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+          description: The HTTP response code of the callback server (in case a callback
+            URL is set).
+        category_template:
+          type: integer
+          nullable: true
+          title: Category
+        category_confidence:
+          type: number
+          format: float
+          nullable: true
+        file_url:
+          type: string
+          readOnly: true
+        data_file_name:
+          type: string
+          title: File name
+          maxLength: 1024
+        data_file_producer:
+          type: string
+          nullable: true
+          title: File producer
+          maxLength: 1024
+        data_file:
+          type: string
+          format: uri
+          title: File
+        ocr_time:
+          type: number
+          format: float
+          nullable: true
+        extraction_time:
+          type: number
+          format: float
+          nullable: true
+        workflow_start_time:
+          type: number
+          format: float
+          nullable: true
+        workflow_end_time:
+          type: number
+          format: float
+          nullable: true
+        dataset_status:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          type: integer
+          description: |-
+            * `0` — None
+            * `1` — Preparation
+            * `2` — Training
+            * `3` — Test
+            * `4` — Excluded
+          minimum: 0
+          maximum: 2147483647
+        status:
+          type: object
+          additionalProperties: {}
+          description: A list containing two elements. First, the document status
+            code as int. Second, a description of the status code as string. This
+            field will be deprecated in a future version, use `status_data` instead.
+        status_data:
+          enum:
+          - 0
+          - 10
+          - 111
+          - 1
+          - 20
+          - 2
+          type: integer
+          description: |-
+            * `0` — Queuing for OCR
+            * `10` — OCR in progress
+            * `111` — Document could not be processed.
+            * `1` — Queuing for extraction
+            * `20` — Extraction in progress
+            * `2` — Done
+          minimum: 0
+          maximum: 2147483647
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - data_file
+      - data_file_name
+      - file_url
+      - id
+      - updated_at
+    DocumentSerializerV2:
+      type: object
+      description: Show all annotations in one document.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project:
+          type: integer
+        number_of_pages:
+          type: integer
+          readOnly: true
+        callback_url:
+          type: string
+          format: uri
+          readOnly: true
+          description: The callback URL can be specified when using the API.
+        sync:
+          type: boolean
+          readOnly: true
+        file_url:
+          type: string
+          readOnly: true
+        data_file_name:
+          type: string
+          readOnly: true
+          title: File name
+        labels:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                type: object
+                additionalProperties: {}
+        groups:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties: {}
+        ocr_time:
+          type: number
+          format: float
+          readOnly: true
+        extraction_time:
+          type: number
+          format: float
+          readOnly: true
+        extraction_url:
+          type: string
+          readOnly: true
+        category_template:
+          type: integer
+          readOnly: true
+          title: Category
+        category_confidence:
+          type: number
+          format: float
+          readOnly: true
+        status:
+          type: array
+          items:
+            type: integer
+          minLength: 2
+          maxLength: 2
+          readOnly: true
+        text:
+          type: string
+          readOnly: true
+      required:
+      - callback_url
+      - category_confidence
+      - category_template
+      - data_file_name
+      - extraction_time
+      - extraction_url
+      - file_url
+      - id
+      - number_of_pages
+      - ocr_time
+      - project
+      - status
+      - sync
+      - text
+    DocumentSerializerV2Request:
+      type: object
+      description: Show all annotations in one document.
+      properties:
+        project:
+          type: integer
+        labels:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                type: object
+                additionalProperties: {}
+        groups:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties: {}
+      required:
+      - project
+    Label:
+      type: object
+      description: Default Label Serializer.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project:
+          type: integer
+        text:
+          type: string
+          title: Name
+          description: The name of the label.
+          maxLength: 100
+        text_clean:
+          type: string
+          readOnly: true
+        shortcut:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          nullable: true
+          description: The description of the label.
+        threshold:
+          type: number
+          format: float
+          maximum: 1.0
+          description: The minimum confidence an annotation needs to have for AI to
+            suggest it to humans.
+          minimum: 0.0
+        token_full_replacement:
+          type: boolean
+        token_whitespace_replacement:
+          type: boolean
+        token_number_replacement:
+          type: boolean
+        has_multiple_top_candidates:
+          type: boolean
+          title: Multiple
+          description: More than one value can be correct per label set and document.
+            For example, there could be a list of room names in a rental contract
+            like "living room", "bathroom" and "kitchen". If this is set, (1) annotations
+            with this label are combined into a single cell in the csv export, (2)
+            multiple annotations with this label are shown on the dashboard (instead
+            of the most likely one), (3) in the evaluation every annotation of the
+            ground truth needs to be matched (instead of only one).
+        get_data_type_display:
+          type: string
+          readOnly: true
+      required:
+      - get_data_type_display
+      - id
+      - project
+      - shortcut
+      - text
+      - text_clean
+    LabelRequest:
+      type: object
+      description: Default Label Serializer.
+      properties:
+        project:
+          type: integer
+        text:
+          type: string
+          title: Name
+          description: The name of the label.
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          description: The description of the label.
+        threshold:
+          type: number
+          format: float
+          maximum: 1.0
+          description: The minimum confidence an annotation needs to have for AI to
+            suggest it to humans.
+          minimum: 0.0
+        token_full_replacement:
+          type: boolean
+        token_whitespace_replacement:
+          type: boolean
+        token_number_replacement:
+          type: boolean
+        has_multiple_top_candidates:
+          type: boolean
+          title: Multiple
+          description: More than one value can be correct per label set and document.
+            For example, there could be a list of room names in a rental contract
+            like "living room", "bathroom" and "kitchen". If this is set, (1) annotations
+            with this label are combined into a single cell in the csv export, (2)
+            multiple annotations with this label are shown on the dashboard (instead
+            of the most likely one), (3) in the evaluation every annotation of the
+            ground truth needs to be matched (instead of only one).
+      required:
+      - project
+      - text
+    PaginatedDocumentMetaList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentMeta'
+    PaginatedPublicLabelList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicLabel'
+    Project:
+      type: object
+      description: Default Project Serializer. Used e.g. to upload new ai models to
+        a project.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          description: The name of the project.
+          maxLength: 100
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Label'
+          readOnly: true
+        section_labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SectionLabel'
+          readOnly: true
+        storage_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        priority_processing:
+          type: boolean
+          title: Priority OCR and extraction
+        ocr_method:
+          enum:
+          - local
+          - read_v3
+          - read_v3_fast
+          type: string
+      required:
+      - id
+      - labels
+      - name
+      - section_labels
+    ProjectRequest:
+      type: object
+      description: Default Project Serializer. Used e.g. to upload new ai models to
+        a project.
+      properties:
+        name:
+          type: string
+          description: The name of the project.
+          maxLength: 100
+        storage_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        priority_processing:
+          type: boolean
+          title: Priority OCR and extraction
+        ocr_method:
+          enum:
+          - local
+          - read_v3
+          - read_v3_fast
+          type: string
+      required:
+      - name
+    PublicDocument:
+      type: object
+      description: Used for the new public Document endpoints.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project:
+          type: integer
+          readOnly: true
+        number_of_pages:
+          type: integer
+          readOnly: true
+        callback_url:
+          type: string
+          format: uri
+          readOnly: true
+          description: The callback URL can be specified when using the API.
+        file_url:
+          type: string
+          readOnly: true
+        ocr_time:
+          type: number
+          format: float
+          readOnly: true
+        extraction_time:
+          type: number
+          format: float
+          readOnly: true
+        extraction_url:
+          type: string
+          readOnly: true
+        category_confidence:
+          type: number
+          format: float
+          readOnly: true
+        status:
+          type: array
+          items:
+            type: integer
+          minLength: 2
+          maxLength: 2
+          readOnly: true
+        text:
+          type: string
+          readOnly: true
+        assignee:
+          type: integer
+          nullable: true
+        data_file_name:
+          type: string
+          title: File name
+          maxLength: 1024
+        dataset_status:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          type: integer
+          description: |-
+            * `0` — None
+            * `1` — Preparation
+            * `2` — Training
+            * `3` — Test
+            * `4` — Excluded
+          minimum: 0
+          maximum: 2147483647
+        category_template:
+          type: integer
+          nullable: true
+          title: Category
+        sync:
+          type: boolean
+      required:
+      - callback_url
+      - category_confidence
+      - data_file_name
+      - extraction_time
+      - extraction_url
+      - file_url
+      - id
+      - number_of_pages
+      - ocr_time
+      - project
+      - status
+      - text
+    PublicDocumentRequest:
+      type: object
+      description: Used for the new public Document endpoints.
+      properties:
+        assignee:
+          type: integer
+          nullable: true
+        data_file_name:
+          type: string
+          title: File name
+          maxLength: 1024
+        dataset_status:
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          type: integer
+          description: |-
+            * `0` — None
+            * `1` — Preparation
+            * `2` — Training
+            * `3` — Test
+            * `4` — Excluded
+          minimum: 0
+          maximum: 2147483647
+        category_template:
+          type: integer
+          nullable: true
+          title: Category
+        sync:
+          type: boolean
+      required:
+      - data_file_name
+    PublicLabel:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project:
+          type: integer
+        text:
+          type: string
+          title: Name
+          description: The name of the label.
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          description: The description of the label.
+        has_multiple_top_candidates:
+          type: boolean
+          title: Multiple
+          description: More than one value can be correct per label set and document.
+            For example, there could be a list of room names in a rental contract
+            like "living room", "bathroom" and "kitchen". If this is set, (1) annotations
+            with this label are combined into a single cell in the csv export, (2)
+            multiple annotations with this label are shown on the dashboard (instead
+            of the most likely one), (3) in the evaluation every annotation of the
+            ground truth needs to be matched (instead of only one).
+        get_data_type_display:
+          type: string
+          readOnly: true
+        templates:
+          type: array
+          items:
+            type: integer
+          description: A list of IDs of templates to set on this label.
+      required:
+      - get_data_type_display
+      - id
+      - project
+      - text
+    PublicLabelRequest:
+      type: object
+      properties:
+        project:
+          type: integer
+        text:
+          type: string
+          title: Name
+          description: The name of the label.
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+          description: The description of the label.
+        has_multiple_top_candidates:
+          type: boolean
+          title: Multiple
+          description: More than one value can be correct per label set and document.
+            For example, there could be a list of room names in a rental contract
+            like "living room", "bathroom" and "kitchen". If this is set, (1) annotations
+            with this label are combined into a single cell in the csv export, (2)
+            multiple annotations with this label are shown on the dashboard (instead
+            of the most likely one), (3) in the evaluation every annotation of the
+            ground truth needs to be matched (instead of only one).
+        templates:
+          type: array
+          items:
+            type: integer
+          description: A list of IDs of templates to set on this label.
+      required:
+      - project
+      - text
+    SectionLabel:
+      type: object
+      description: Show all section labels.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 25
+        name_clean:
+          type: string
+          readOnly: true
+        labels:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        is_default:
+          type: boolean
+          description: Default templates refer to the type of a document, e.g. invoice,
+            contract, payslip, account statement.
+        default_section_labels:
+          type: array
+          items:
+            type: integer
+            title: Categories
+          title: Categories
+        has_multiple_sections:
+          type: boolean
+          title: Multiple ann. sets
+          description: The label set can be found multiple times per document.
+      required:
+      - id
+      - labels
+      - name
+      - name_clean
+    SectionLabelRequest:
+      type: object
+      description: Show all section labels.
+      properties:
+        name:
+          type: string
+          maxLength: 25
+        is_default:
+          type: boolean
+          description: Default templates refer to the type of a document, e.g. invoice,
+            contract, payslip, account statement.
+        default_section_labels:
+          type: array
+          items:
+            type: integer
+            title: Categories
+          title: Categories
+        has_multiple_sections:
+          type: boolean
+          title: Multiple ann. sets
+          description: The label set can be found multiple times per document.
+      required:
+      - name
+    SequenceAnnotation:
+      type: object
+      description: Represents a SequenceAnnotation. Used in labeling tool.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        label:
+          type: integer
+        label_text:
+          type: string
+          readOnly: true
+        label_data_type:
+          type: string
+          readOnly: true
+        label_threshold:
+          type: number
+          format: float
+          readOnly: true
+        section_label_text:
+          type: string
+          readOnly: true
+        section_label_id:
+          type: integer
+        section:
+          type: integer
+          nullable: true
+        offset_string:
+          type: string
+          nullable: true
+        offset_string_original:
+          type: string
+          nullable: true
+          title: Original offset string
+        translated_string:
+          type: string
+          readOnly: true
+        normalized:
+          oneOf:
+          - type: string
+          - type: number
+            format: float
+          nullable: true
+          readOnly: true
+        start_offset:
+          type: integer
+          maximum: 2147483647
+          nullable: true
+          minimum: 0
+        end_offset:
+          type: integer
+          maximum: 2147483647
+          nullable: true
+          minimum: 0
+        accuracy:
+          type: number
+          format: float
+          nullable: true
+        is_correct:
+          type: boolean
+          title: Correct
+        revised:
+          type: boolean
+          title: Human revised
+        created_by:
+          type: integer
+          readOnly: true
+        revised_by:
+          type: integer
+          readOnly: true
+        bbox:
+          type: object
+          additionalProperties: {}
+        bboxes:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        selection_bbox:
+          type: object
+          additionalProperties: {}
+        custom_offset_string:
+          type: boolean
+          readOnly: true
+        get_created_by:
+          type: string
+          readOnly: true
+        get_revised_by:
+          type: string
+          readOnly: true
+      required:
+      - bboxes
+      - created_by
+      - custom_offset_string
+      - get_created_by
+      - get_revised_by
+      - id
+      - label
+      - label_data_type
+      - label_text
+      - label_threshold
+      - normalized
+      - revised_by
+      - section_label_text
+      - translated_string
+    SequenceAnnotationRequest:
+      type: object
+      description: Represents a SequenceAnnotation. Used in labeling tool.
+      properties:
+        label:
+          type: integer
+        section_label_id:
+          type: integer
+        section:
+          type: integer
+          nullable: true
+        offset_string:
+          type: string
+          nullable: true
+        offset_string_original:
+          type: string
+          nullable: true
+          title: Original offset string
+        start_offset:
+          type: integer
+          maximum: 2147483647
+          nullable: true
+          minimum: 0
+        end_offset:
+          type: integer
+          maximum: 2147483647
+          nullable: true
+          minimum: 0
+        accuracy:
+          type: number
+          format: float
+          nullable: true
+        is_correct:
+          type: boolean
+          title: Correct
+        revised:
+          type: boolean
+          title: Human revised
+        bbox:
+          type: object
+          additionalProperties: {}
+        custom_bboxes:
+          type: object
+          additionalProperties: {}
+          writeOnly: true
+        selection_bbox:
+          type: object
+          additionalProperties: {}
+        page_number:
+          type: integer
+          writeOnly: true
+          nullable: true
+      required:
+      - label
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: Session
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
