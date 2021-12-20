@@ -1,0 +1,5907 @@
+{
+"swagger": "2.0",
+"info": {
+"description": "Copyright © OpenKM Knowledge Management System S.L. \nThis program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 2 of the License.",
+"version": "6.3.9",
+"title": "OpenKM REST API",
+"contact": {
+"name": "contact@openkm.com"
+},
+"license": {
+"name": "Community license of API",
+"url": "https://docs.openkm.com/kcenter/view/licenses/"
+}
+},
+"basePath": "/OpenKM/services/rest",
+"tags": [
+{
+"name": "auth-service"
+},
+{
+"name": "conversion-service"
+},
+{
+"name": "document-service"
+},
+{
+"name": "folder-service"
+},
+{
+"name": "mail-service"
+},
+{
+"name": "note-service"
+},
+{
+"name": "gropertyGroup-service"
+},
+{
+"name": "property-service"
+},
+{
+"name": "repository-service"
+},
+{
+"name": "search-service"
+},
+{
+"name": "test-service"
+}
+],
+"paths": {
+"/auth/getUsersByRole/{role}": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "getUsersByRole",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "role",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/UserList"
+},
+"headers": {}
+}
+}
+}
+},
+"/auth/getMail/{user}": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "getMail",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "user",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/auth/getRolesByUser/{user}": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "getRolesByUser",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "user",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/RoleList"
+},
+"headers": {}
+}
+}
+}
+},
+"/auth/updateUser": {
+"put": {
+"tags": [
+"auth-service"
+],
+"operationId": "updateUser",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "user",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "password",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "email",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "name",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "active",
+"in": "formData",
+"required": false,
+"type": "boolean"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/deleteUser": {
+"delete": {
+"tags": [
+"auth-service"
+],
+"operationId": "deleteUser",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "user",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/updateRole": {
+"put": {
+"tags": [
+"auth-service"
+],
+"operationId": "updateRole",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "role",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "active",
+"in": "formData",
+"required": false,
+"type": "boolean"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/deleteRole": {
+"delete": {
+"tags": [
+"auth-service"
+],
+"operationId": "deleteRole",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "role",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/getGrantedRoles": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "getGrantedRoles",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/GrantedRoleList"
+},
+"headers": {}
+}
+}
+}
+},
+"/auth/getGrantedUsers": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "getGrantedUsers",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/GrantedUserList"
+},
+"headers": {}
+}
+}
+}
+},
+"/auth/grantUser": {
+"put": {
+"tags": [
+"auth-service"
+],
+"operationId": "grantUser",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "user",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "permissions",
+"in": "formData",
+"required": false,
+"type": "integer",
+"format": "int32"
+},
+{
+"name": "recursive",
+"in": "formData",
+"required": false,
+"type": "boolean",
+"default": false
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/revokeRole": {
+"put": {
+"tags": [
+"auth-service"
+],
+"operationId": "revokeRole",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "role",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "permissions",
+"in": "formData",
+"required": false,
+"type": "integer",
+"format": "int32"
+},
+{
+"name": "recursive",
+"in": "formData",
+"required": false,
+"type": "boolean"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/revokeUser": {
+"put": {
+"tags": [
+"auth-service"
+],
+"operationId": "revokeUser",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "user",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "permissions",
+"in": "formData",
+"required": false,
+"type": "integer",
+"format": "int32"
+},
+{
+"name": "recursive",
+"in": "formData",
+"required": false,
+"type": "boolean"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/grantRole": {
+"put": {
+"tags": [
+"auth-service"
+],
+"operationId": "grantRole",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "role",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "permissions",
+"in": "formData",
+"required": false,
+"type": "integer",
+"format": "int32"
+},
+{
+"name": "recursive",
+"in": "formData",
+"required": false,
+"type": "boolean"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/assignRole": {
+"put": {
+"tags": [
+"auth-service"
+],
+"operationId": "assignRole",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "user",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "role",
+"in": "formData",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/getRoles": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "getRoles",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/RoleList"
+},
+"headers": {}
+}
+}
+}
+},
+"/auth/getUsers": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "getUsers",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/UserList"
+},
+"headers": {}
+}
+}
+}
+},
+"/auth/login": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "login",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/removeRole": {
+"put": {
+"tags": [
+"auth-service"
+],
+"operationId": "removeRole",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "user",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "role",
+"in": "formData",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/createRole": {
+"post": {
+"tags": [
+"auth-service"
+],
+"operationId": "createRole",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "role",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "active",
+"in": "formData",
+"required": false,
+"type": "boolean"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/createUser": {
+"post": {
+"tags": [
+"auth-service"
+],
+"operationId": "createUser",
+"consumes": [
+"application/x-www-form-urlencoded"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "user",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "password",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "email",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "name",
+"in": "formData",
+"required": false,
+"type": "string"
+},
+{
+"name": "active",
+"in": "formData",
+"required": false,
+"type": "boolean"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/auth/getName/{user}": {
+"get": {
+"tags": [
+"auth-service"
+],
+"operationId": "getName",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "user",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/conversion/doc2pdf": {
+"post": {
+"tags": [
+"conversion-service"
+],
+"operationId": "doc2pdf",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/pdf"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/conversion/imageConvert": {
+"post": {
+"tags": [
+"conversion-service"
+],
+"operationId": "imageConvert",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/octet-stream"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/checkout": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "checkout",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/restoreVersion": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "restoreVersion",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "versionId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/forceUnlock": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "forceUnlock",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/cancelCheckout": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "cancelCheckout",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/getVersionHistorySize": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "getVersionHistorySize",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "integer",
+"format": "int64"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/purgeVersionHistory": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "purgeVersionHistory",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/forceCancelCheckout": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "forceCancelCheckout",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/getContentByVersion": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "getContentByVersion",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/octet-stream"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "versionId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/getVersionHistory": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "getVersionHistory",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/VersionList"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/isCheckedOut": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "isCheckedOut",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "boolean"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/checkin": {
+"post": {
+"tags": [
+"document-service"
+],
+"operationId": "checkin",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Version"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/createSimple": {
+"post": {
+"tags": [
+"document-service"
+],
+"operationId": "createSimple",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Document"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/isValid": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "isValid",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "boolean"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/move": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "move",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "dstId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/purge": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "purge",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/getLockInfo": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "getLockInfo",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/LockInfo"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/isLocked": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "isLocked",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "boolean"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/getChildren": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "getChildren",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "fldId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/DocumentList"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/lock": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "lock",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/LockInfo"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/getProperties": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "getProperties",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Document"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/setProperties": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "setProperties",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"$ref": "#/definitions/Document"
+}
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/delete": {
+"delete": {
+"tags": [
+"document-service"
+],
+"operationId": "delete",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/create": {
+"post": {
+"tags": [
+"document-service"
+],
+"operationId": "create",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Document"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/copy": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "copy",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "dstId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/getPath/{uuid}": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "getPath",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "uuid",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/rename": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "rename",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "newName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Document"
+},
+"headers": {}
+}
+}
+}
+},
+"/document/getContent": {
+"get": {
+"tags": [
+"document-service"
+],
+"operationId": "getContent",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/octet-stream"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/document/unlock": {
+"put": {
+"tags": [
+"document-service"
+],
+"operationId": "unlock",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "docId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/folder/createSimple": {
+"post": {
+"tags": [
+"folder-service"
+],
+"operationId": "createSimple",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/folder/createMissingFolders": {
+"put": {
+"tags": [
+"folder-service"
+],
+"operationId": "createMissingFolders",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "fldPath",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/folder/isValid": {
+"get": {
+"tags": [
+"folder-service"
+],
+"operationId": "isValid",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"name": "fldId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "boolean"
+},
+"headers": {}
+}
+}
+}
+},
+"/folder/move": {
+"put": {
+"tags": [
+"folder-service"
+],
+"operationId": "move",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "fldId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "dstId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/folder/getChildren": {
+"get": {
+"tags": [
+"folder-service"
+],
+"operationId": "getChildren",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "fldId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/FolderList"
+},
+"headers": {}
+}
+}
+}
+},
+"/folder/getProperties": {
+"get": {
+"tags": [
+"folder-service"
+],
+"operationId": "getProperties",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "fldId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/folder/delete": {
+"delete": {
+"tags": [
+"folder-service"
+],
+"operationId": "delete",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "fldId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/folder/create": {
+"post": {
+"tags": [
+"folder-service"
+],
+"operationId": "create",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"$ref": "#/definitions/Folder"
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/folder/getPath/{uuid}": {
+"get": {
+"tags": [
+"folder-service"
+],
+"operationId": "getPath",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "uuid",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/folder/rename": {
+"put": {
+"tags": [
+"folder-service"
+],
+"operationId": "rename",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "fldId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "newName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/mail/importEml": {
+"post": {
+"tags": [
+"mail-service"
+],
+"operationId": "importEml",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Mail"
+},
+"headers": {}
+}
+}
+}
+},
+"/mail/importMsg": {
+"post": {
+"tags": [
+"mail-service"
+],
+"operationId": "importMsg",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Mail"
+},
+"headers": {}
+}
+}
+}
+},
+"/mail/isValid": {
+"get": {
+"tags": [
+"mail-service"
+],
+"operationId": "isValid",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"name": "mailId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "boolean"
+},
+"headers": {}
+}
+}
+}
+},
+"/mail/move": {
+"put": {
+"tags": [
+"mail-service"
+],
+"operationId": "move",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "mailId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "dstId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/mail/getChildren": {
+"get": {
+"tags": [
+"mail-service"
+],
+"operationId": "getChildren",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "mailId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/MailList"
+},
+"headers": {}
+}
+}
+}
+},
+"/mail/getProperties": {
+"get": {
+"tags": [
+"mail-service"
+],
+"operationId": "getProperties",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "mailId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Mail"
+},
+"headers": {}
+}
+}
+}
+},
+"/mail/delete": {
+"delete": {
+"tags": [
+"mail-service"
+],
+"operationId": "delete",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "mailId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/mail/create": {
+"post": {
+"tags": [
+"mail-service"
+],
+"operationId": "create",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"$ref": "#/definitions/Mail"
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Mail"
+},
+"headers": {}
+}
+}
+}
+},
+"/mail/getPath/{uuid}": {
+"get": {
+"tags": [
+"mail-service"
+],
+"operationId": "getPath",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "uuid",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/mail/rename": {
+"put": {
+"tags": [
+"mail-service"
+],
+"operationId": "rename",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "mailId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "newName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Mail"
+},
+"headers": {}
+}
+}
+}
+},
+"/note/add": {
+"post": {
+"tags": [
+"note-service"
+],
+"operationId": "add",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Note"
+},
+"headers": {}
+}
+}
+}
+},
+"/note/get": {
+"get": {
+"tags": [
+"note-service"
+],
+"operationId": "get",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "noteId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Note"
+},
+"headers": {}
+}
+}
+}
+},
+"/note/delete": {
+"delete": {
+"tags": [
+"note-service"
+],
+"operationId": "delete",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "noteId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/note/list": {
+"get": {
+"tags": [
+"note-service"
+],
+"operationId": "list",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/NoteList"
+},
+"headers": {}
+}
+}
+}
+},
+"/note/set": {
+"put": {
+"tags": [
+"note-service"
+],
+"operationId": "set",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "noteId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "string"
+}
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/propertyGroup/getAllGroups": {
+"get": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "getAllGroups",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/PropertyGroupList"
+},
+"headers": {}
+}
+}
+}
+},
+"/propertyGroup/getPropertyGroupForm": {
+"get": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "getPropertyGroupForm",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "grpName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/FormElementComplexList"
+},
+"headers": {}
+}
+}
+}
+},
+"/propertyGroup/hasGroup": {
+"get": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "hasGroup",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "grpName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "boolean"
+},
+"headers": {}
+}
+}
+}
+},
+"/propertyGroup/setPropertiesSimple": {
+"put": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "setPropertiesSimple",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "grpName",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"$ref": "#/definitions/SimplePropertyGroupList"
+}
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/propertyGroup/getPropertiesSimple": {
+"get": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "getPropertiesSimple",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "grpName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/SimplePropertyGroupList"
+},
+"headers": {}
+}
+}
+}
+},
+"/propertyGroup/getGroups": {
+"get": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "getGroups",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/PropertyGroupList"
+},
+"headers": {}
+}
+}
+}
+},
+"/propertyGroup/removeGroup": {
+"delete": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "removeGroup",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "grpName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/propertyGroup/addGroup": {
+"put": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "addGroup",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "grpName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/propertyGroup/getProperties": {
+"get": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "getProperties",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "grpName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/FormElementComplexList"
+},
+"headers": {}
+}
+}
+}
+},
+"/propertyGroup/setProperties": {
+"put": {
+"tags": [
+"gropertyGroup-service"
+],
+"operationId": "setProperties",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "grpName",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"$ref": "#/definitions/FormElementComplexList"
+}
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/property/setSigned": {
+"put": {
+"tags": [
+"property-service"
+],
+"operationId": "setSigned",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "signed",
+"in": "query",
+"required": false,
+"type": "boolean"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/property/removeCategory": {
+"delete": {
+"tags": [
+"property-service"
+],
+"operationId": "removeCategory",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "catId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/property/addCategory": {
+"post": {
+"tags": [
+"property-service"
+],
+"operationId": "addCategory",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "catId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/property/addKeyword": {
+"post": {
+"tags": [
+"property-service"
+],
+"operationId": "addKeyword",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "keyword",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/property/removeKeyword": {
+"delete": {
+"tags": [
+"property-service"
+],
+"operationId": "removeKeyword",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "keyword",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/property/setEncryption": {
+"put": {
+"tags": [
+"property-service"
+],
+"operationId": "setEncryption",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "cipherName",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/property/unsetEncryption": {
+"put": {
+"tags": [
+"property-service"
+],
+"operationId": "unsetEncryption",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/repository/getNodePath/{uuid}": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getNodePath",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "uuid",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getNodeUuid": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getNodeUuid",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "nodePath",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getRootFolder": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getRootFolder",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getMailFolder": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getMailFolder",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getUpdateMessage": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getUpdateMessage",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getAppVersion": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getAppVersion",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/AppVersion"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/purgeTrash": {
+"delete": {
+"tags": [
+"repository-service"
+],
+"operationId": "purgeTrash",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/repository/getTrashFolder": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getTrashFolder",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getPersonalFolder": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getPersonalFolder",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getTemplatesFolder": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getTemplatesFolder",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getThesaurusFolder": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getThesaurusFolder",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getCategoriesFolder": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getCategoriesFolder",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Folder"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/hasNode": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "hasNode",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"name": "nodeId",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "boolean"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getRepositoryUuid": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getRepositoryUuid",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/executeHqlQuery": {
+"post": {
+"tags": [
+"repository-service"
+],
+"operationId": "executeHqlQuery",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/HqlQueryResults"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/executeScript": {
+"post": {
+"tags": [
+"repository-service"
+],
+"operationId": "executeScript",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/ScriptExecutionResult"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/executeSqlQuery": {
+"post": {
+"tags": [
+"repository-service"
+],
+"operationId": "executeSqlQuery",
+"consumes": [
+"multipart/form-data"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Attachment"
+}
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/SqlQueryResults"
+},
+"headers": {}
+}
+}
+}
+},
+"/repository/getConfiguration": {
+"get": {
+"tags": [
+"repository-service"
+],
+"operationId": "getConfiguration",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "key",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Configuration"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/deleteSearch/{qpId}": {
+"delete": {
+"tags": [
+"search-service"
+],
+"operationId": "deleteSearch",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "qpId",
+"in": "path",
+"required": true,
+"type": "integer",
+"format": "int32"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/search/findPaginated": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "findPaginated",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "offset",
+"in": "query",
+"required": false,
+"type": "integer",
+"default": 0,
+"format": "int32"
+},
+{
+"name": "limit",
+"in": "query",
+"required": false,
+"type": "integer",
+"default": 10,
+"format": "int32"
+},
+{
+"name": "content",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "name",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "domain",
+"in": "query",
+"required": false,
+"type": "integer",
+"default": 1,
+"format": "int32"
+},
+{
+"name": "keyword",
+"in": "query",
+"required": false,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "multi"
+},
+{
+"name": "category",
+"in": "query",
+"required": false,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "multi"
+},
+{
+"name": "property",
+"in": "query",
+"required": false,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "multi"
+},
+{
+"name": "author",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "mimeType",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "lastModifiedFrom",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "lastModifiedTo",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "mailSubject",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "mailFrom",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "mailTo",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "path",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/ResultSet"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/getKeywordMap": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "getKeywordMap",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "filter",
+"in": "query",
+"required": false,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "multi"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/KeywordMapList"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/findSimpleQueryPaginated": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "findSimpleQueryPaginated",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "offset",
+"in": "query",
+"required": false,
+"type": "integer",
+"default": 0,
+"format": "int32"
+},
+{
+"name": "limit",
+"in": "query",
+"required": false,
+"type": "integer",
+"default": 10,
+"format": "int32"
+},
+{
+"name": "statement",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/ResultSet"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/findSimpleQueryPaginated/{uuid}/{max}": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "findMoreLikeThis",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "uuid",
+"in": "path",
+"required": true,
+"type": "string"
+},
+{
+"name": "max",
+"in": "path",
+"required": true,
+"type": "integer",
+"format": "int32"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/ResultSet"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/getAllSearchs": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "getAllSearchs",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/QueryParamsList"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/saveSearch": {
+"post": {
+"tags": [
+"search-service"
+],
+"operationId": "saveSearch",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"text/plain"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"$ref": "#/definitions/QueryParams"
+}
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "integer",
+"format": "int64"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/getCategorizedDocuments/{categoryId}": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "getCategorizedDocuments",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "categoryId",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/DocumentList"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/findByContent": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "findByContent",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "content",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/QueryResultList"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/updateSearch": {
+"put": {
+"tags": [
+"search-service"
+],
+"operationId": "updateSearch",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"$ref": "#/definitions/QueryParams"
+}
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/search/findByKeywords": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "findByKeywords",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "keyword",
+"in": "query",
+"required": false,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "multi"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/QueryResultList"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/getSearch/{qpId}": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "getSearch",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "qpId",
+"in": "path",
+"required": true,
+"type": "integer",
+"format": "int32"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/QueryParams"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/findByName": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "findByName",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "name",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/QueryResultList"
+},
+"headers": {}
+}
+}
+}
+},
+"/search/find": {
+"get": {
+"tags": [
+"search-service"
+],
+"operationId": "find",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "content",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "name",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "domain",
+"in": "query",
+"required": false,
+"type": "integer",
+"default": 1,
+"format": "int32"
+},
+{
+"name": "keyword",
+"in": "query",
+"required": false,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "multi"
+},
+{
+"name": "category",
+"in": "query",
+"required": false,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "multi"
+},
+{
+"name": "property",
+"in": "query",
+"required": false,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "multi"
+},
+{
+"name": "author",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "mimeType",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "lastModifiedFrom",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "lastModifiedTo",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "mailSubject",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "mailFrom",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "mailTo",
+"in": "query",
+"required": false,
+"type": "string"
+},
+{
+"name": "path",
+"in": "query",
+"required": false,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/QueryResultList"
+},
+"headers": {}
+}
+}
+}
+},
+"/test/getSimple": {
+"get": {
+"tags": [
+"test-service"
+],
+"operationId": "getSimple",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+},
+"/test/sendComplex": {
+"put": {
+"tags": [
+"test-service"
+],
+"operationId": "sendComplex",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"in": "body",
+"name": "body",
+"required": false,
+"schema": {
+"$ref": "#/definitions/Note"
+}
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/test/getComplex": {
+"get": {
+"tags": [
+"test-service"
+],
+"operationId": "getComplex",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"$ref": "#/definitions/Note"
+},
+"headers": {}
+}
+}
+}
+},
+"/test/sendSimple/{param}": {
+"get": {
+"tags": [
+"test-service"
+],
+"operationId": "sendSimple",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "param",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"default": {
+"description": "successful operation"
+}
+}
+}
+},
+"/test/sort1/{array}": {
+"get": {
+"tags": [
+"test-service"
+],
+"operationId": "sort1",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "array",
+"in": "path",
+"required": true,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "csv"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "array",
+"items": {
+"type": "string"
+}
+},
+"headers": {}
+}
+}
+}
+},
+"/test/sort2/{array}": {
+"get": {
+"tags": [
+"test-service"
+],
+"operationId": "sort2",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "array",
+"in": "path",
+"required": true,
+"type": "array",
+"items": {
+"type": "string"
+},
+"collectionFormat": "csv"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "array",
+"items": {
+"type": "string"
+}
+},
+"headers": {}
+}
+}
+}
+},
+"/test/greetings/{name}": {
+"get": {
+"tags": [
+"test-service"
+],
+"operationId": "greetings",
+"consumes": [
+"application/xml",
+"application/json"
+],
+"produces": [
+"application/xml",
+"application/json"
+],
+"parameters": [
+{
+"name": "name",
+"in": "path",
+"required": true,
+"type": "string"
+}
+],
+"responses": {
+"200": {
+"description": "successful operation",
+"schema": {
+"type": "string"
+},
+"headers": {}
+}
+}
+}
+}
+},
+"definitions": {
+"UserList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"type": "string"
+}
+}
+},
+"xml": {
+"name": "users"
+}
+},
+"RoleList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"type": "string"
+}
+}
+},
+"xml": {
+"name": "roles"
+}
+},
+"GrantedRole": {
+"type": "object",
+"properties": {
+"role": {
+"type": "string"
+},
+"permissions": {
+"type": "integer",
+"format": "int32"
+}
+},
+"xml": {
+"name": "grantedRole"
+}
+},
+"GrantedRoleList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/GrantedRole"
+}
+}
+},
+"xml": {
+"name": "grantedRoles"
+}
+},
+"GrantedUser": {
+"type": "object",
+"properties": {
+"user": {
+"type": "string"
+},
+"permissions": {
+"type": "integer",
+"format": "int32"
+}
+},
+"xml": {
+"name": "grantedUser"
+}
+},
+"GrantedUserList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/GrantedUser"
+}
+}
+},
+"xml": {
+"name": "grantedUsers"
+}
+},
+"Attachment": {
+"type": "object",
+"properties": {
+"headers": {
+"type": "object",
+"additionalProperties": {
+"type": "array",
+"items": {
+"type": "string"
+}
+}
+},
+"object": {
+"type": "object"
+},
+"dataHandler": {
+"$ref": "#/definitions/DataHandler"
+},
+"contentDisposition": {
+"$ref": "#/definitions/ContentDisposition"
+},
+"contentId": {
+"type": "string"
+},
+"contentType": {
+"$ref": "#/definitions/MediaType"
+}
+}
+},
+"CommandInfo": {
+"type": "object",
+"properties": {
+"commandName": {
+"type": "string"
+},
+"commandClass": {
+"type": "string"
+}
+}
+},
+"ContentDisposition": {
+"type": "object",
+"properties": {
+"type": {
+"type": "string"
+},
+"filename": {
+"type": "string"
+},
+"parameters": {
+"type": "object",
+"additionalProperties": {
+"type": "string"
+}
+}
+}
+},
+"DataFlavor": {
+"type": "object",
+"properties": {
+"mimeType": {
+"type": "string"
+},
+"humanPresentableName": {
+"type": "string"
+},
+"primaryType": {
+"type": "string"
+},
+"subType": {
+"type": "string"
+},
+"mimeTypeSerializedObject": {
+"type": "boolean"
+},
+"defaultRepresentationClassAsString": {
+"type": "string"
+},
+"representationClassInputStream": {
+"type": "boolean"
+},
+"representationClassReader": {
+"type": "boolean"
+},
+"representationClassCharBuffer": {
+"type": "boolean"
+},
+"representationClassByteBuffer": {
+"type": "boolean"
+},
+"representationClassSerializable": {
+"type": "boolean"
+},
+"representationClassRemote": {
+"type": "boolean"
+},
+"flavorSerializedObjectType": {
+"type": "boolean"
+},
+"flavorRemoteObjectType": {
+"type": "boolean"
+},
+"flavorJavaFileListType": {
+"type": "boolean"
+},
+"flavorTextType": {
+"type": "boolean"
+}
+}
+},
+"DataHandler": {
+"type": "object",
+"properties": {
+"dataSource": {
+"$ref": "#/definitions/DataSource"
+},
+"transferDataFlavors": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/DataFlavor"
+}
+},
+"preferredCommands": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/CommandInfo"
+}
+},
+"allCommands": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/CommandInfo"
+}
+},
+"contentType": {
+"type": "string"
+},
+"outputStream": {
+"$ref": "#/definitions/OutputStream"
+},
+"name": {
+"type": "string"
+},
+"inputStream": {
+"$ref": "#/definitions/InputStream"
+},
+"content": {
+"type": "object"
+}
+}
+},
+"DataSource": {
+"type": "object",
+"properties": {
+"contentType": {
+"type": "string"
+},
+"outputStream": {
+"$ref": "#/definitions/OutputStream"
+},
+"name": {
+"type": "string"
+},
+"inputStream": {
+"$ref": "#/definitions/InputStream"
+}
+}
+},
+"InputStream": {
+"type": "object"
+},
+"MediaType": {
+"type": "object",
+"properties": {
+"type": {
+"type": "string"
+},
+"subtype": {
+"type": "string"
+},
+"parameters": {
+"type": "object",
+"additionalProperties": {
+"type": "string"
+}
+},
+"wildcardType": {
+"type": "boolean"
+},
+"wildcardSubtype": {
+"type": "boolean"
+}
+}
+},
+"OutputStream": {
+"type": "object"
+},
+"Version": {
+"type": "object",
+"properties": {
+"name": {
+"type": "string"
+},
+"created": {
+"type": "string",
+"format": "date-time"
+},
+"size": {
+"type": "integer",
+"format": "int64"
+},
+"author": {
+"type": "string"
+},
+"actual": {
+"type": "boolean"
+},
+"comment": {
+"type": "string"
+},
+"checksum": {
+"type": "string"
+}
+},
+"xml": {
+"name": "version"
+}
+},
+"VersionList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Version"
+}
+}
+},
+"xml": {
+"name": "versions"
+}
+},
+"Document": {
+"type": "object",
+"properties": {
+"created": {
+"type": "string",
+"format": "date-time"
+},
+"path": {
+"type": "string"
+},
+"author": {
+"type": "string"
+},
+"permissions": {
+"type": "integer",
+"format": "int32"
+},
+"uuid": {
+"type": "string"
+},
+"subscribed": {
+"type": "boolean"
+},
+"subscriptors": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"keywords": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"categories": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"$ref": "#/definitions/Folder"
+}
+},
+"notes": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Note"
+}
+},
+"title": {
+"type": "string"
+},
+"description": {
+"type": "string"
+},
+"language": {
+"type": "string"
+},
+"lastModified": {
+"type": "string",
+"format": "date-time"
+},
+"mimeType": {
+"type": "string"
+},
+"locked": {
+"type": "boolean"
+},
+"checkedOut": {
+"type": "boolean"
+},
+"actualVersion": {
+"$ref": "#/definitions/Version"
+},
+"lockInfo": {
+"$ref": "#/definitions/LockInfo"
+},
+"signed": {
+"type": "boolean"
+},
+"convertibleToPdf": {
+"type": "boolean"
+},
+"convertibleToSwf": {
+"type": "boolean"
+},
+"cipherName": {
+"type": "string"
+}
+},
+"xml": {
+"name": "document"
+}
+},
+"Folder": {
+"type": "object",
+"properties": {
+"created": {
+"type": "string",
+"format": "date-time"
+},
+"path": {
+"type": "string"
+},
+"author": {
+"type": "string"
+},
+"permissions": {
+"type": "integer",
+"format": "int32"
+},
+"uuid": {
+"type": "string"
+},
+"subscribed": {
+"type": "boolean"
+},
+"subscriptors": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"keywords": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"categories": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"$ref": "#/definitions/Folder"
+}
+},
+"notes": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Note"
+}
+},
+"hasChildren": {
+"type": "boolean"
+}
+},
+"xml": {
+"name": "folder"
+}
+},
+"LockInfo": {
+"type": "object",
+"properties": {
+"owner": {
+"type": "string"
+},
+"nodePath": {
+"type": "string"
+},
+"token": {
+"type": "string"
+}
+},
+"xml": {
+"name": "lockInfo"
+}
+},
+"Note": {
+"type": "object",
+"properties": {
+"date": {
+"type": "string",
+"format": "date-time"
+},
+"author": {
+"type": "string"
+},
+"text": {
+"type": "string"
+},
+"path": {
+"type": "string"
+}
+},
+"xml": {
+"name": "note"
+}
+},
+"DocumentList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Document"
+}
+}
+},
+"xml": {
+"name": "documents"
+}
+},
+"FolderList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Folder"
+}
+}
+},
+"xml": {
+"name": "folders"
+}
+},
+"Mail": {
+"type": "object",
+"properties": {
+"created": {
+"type": "string",
+"format": "date-time"
+},
+"path": {
+"type": "string"
+},
+"author": {
+"type": "string"
+},
+"permissions": {
+"type": "integer",
+"format": "int32"
+},
+"uuid": {
+"type": "string"
+},
+"subscribed": {
+"type": "boolean"
+},
+"subscriptors": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"keywords": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"categories": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"$ref": "#/definitions/Folder"
+}
+},
+"notes": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Note"
+}
+},
+"from": {
+"type": "string"
+},
+"reply": {
+"type": "array",
+"items": {
+"type": "string"
+}
+},
+"to": {
+"type": "array",
+"items": {
+"type": "string"
+}
+},
+"cc": {
+"type": "array",
+"items": {
+"type": "string"
+}
+},
+"bcc": {
+"type": "array",
+"items": {
+"type": "string"
+}
+},
+"sentDate": {
+"type": "string",
+"format": "date-time"
+},
+"receivedDate": {
+"type": "string",
+"format": "date-time"
+},
+"subject": {
+"type": "string"
+},
+"content": {
+"type": "string"
+},
+"mimeType": {
+"type": "string"
+},
+"size": {
+"type": "integer",
+"format": "int64"
+},
+"attachments": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Document"
+}
+}
+},
+"xml": {
+"name": "mail"
+}
+},
+"MailList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Mail"
+}
+}
+},
+"xml": {
+"name": "mails"
+}
+},
+"NoteList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Note"
+}
+}
+},
+"xml": {
+"name": "noteList"
+}
+},
+"PropertyGroup": {
+"type": "object",
+"properties": {
+"label": {
+"type": "string"
+},
+"name": {
+"type": "string"
+},
+"visible": {
+"type": "boolean"
+},
+"readonly": {
+"type": "boolean"
+}
+}
+},
+"PropertyGroupList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/PropertyGroup"
+}
+}
+},
+"xml": {
+"name": "propertyGroups"
+}
+},
+"FormElementComplex": {
+"type": "object",
+"properties": {
+"objClass": {
+"type": "string"
+},
+"label": {
+"type": "string"
+},
+"name": {
+"type": "string"
+},
+"width": {
+"type": "string"
+},
+"height": {
+"type": "string"
+},
+"type": {
+"type": "string"
+},
+"value": {
+"type": "string"
+},
+"transition": {
+"type": "string"
+},
+"readonly": {
+"type": "boolean"
+},
+"options": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Option"
+}
+},
+"validators": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Validator"
+}
+}
+}
+},
+"FormElementComplexList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/FormElementComplex"
+}
+}
+},
+"xml": {
+"name": "formElementsComplex"
+}
+},
+"Option": {
+"type": "object",
+"properties": {
+"label": {
+"type": "string"
+},
+"value": {
+"type": "string"
+},
+"selected": {
+"type": "boolean"
+}
+}
+},
+"Validator": {
+"type": "object",
+"properties": {
+"type": {
+"type": "string"
+},
+"parameter": {
+"type": "string"
+}
+}
+},
+"SimplePropertyGroup": {
+"type": "object",
+"properties": {
+"name": {
+"type": "string"
+},
+"value": {
+"type": "string"
+}
+},
+"xml": {
+"name": "simplePropertyGroup"
+}
+},
+"SimplePropertyGroupList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/SimplePropertyGroup"
+}
+}
+},
+"xml": {
+"name": "simplePropertiesGroup"
+}
+},
+"AppVersion": {
+"type": "object",
+"properties": {
+"major": {
+"type": "string"
+},
+"minor": {
+"type": "string"
+},
+"maintenance": {
+"type": "string"
+},
+"build": {
+"type": "string"
+},
+"extension": {
+"type": "string"
+},
+"version": {
+"type": "string"
+}
+},
+"xml": {
+"name": "appVersion"
+}
+},
+"HqlQueryResults": {
+"type": "object",
+"properties": {
+"results": {
+"type": "array",
+"items": {
+"type": "string"
+}
+}
+},
+"xml": {
+"name": "hqlQueryResults"
+}
+},
+"ScriptExecutionResult": {
+"type": "object",
+"properties": {
+"result": {
+"type": "string"
+},
+"stderr": {
+"type": "string"
+},
+"stdout": {
+"type": "string"
+}
+},
+"xml": {
+"name": "scriptExecutionResult"
+}
+},
+"SqlQueryResultColumns": {
+"type": "object",
+"properties": {
+"columns": {
+"type": "array",
+"items": {
+"type": "string"
+}
+}
+},
+"xml": {
+"name": "sqlQueryResultColumns"
+}
+},
+"SqlQueryResults": {
+"type": "object",
+"properties": {
+"results": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/SqlQueryResultColumns"
+}
+}
+},
+"xml": {
+"name": "sqlQueryResults"
+}
+},
+"Configuration": {
+"type": "object",
+"properties": {
+"key": {
+"type": "string"
+},
+"type": {
+"type": "string"
+},
+"value": {
+"type": "string"
+}
+},
+"xml": {
+"name": "configuration"
+}
+},
+"Node": {
+"type": "object",
+"properties": {
+"created": {
+"type": "string",
+"format": "date-time"
+},
+"path": {
+"type": "string"
+},
+"author": {
+"type": "string"
+},
+"permissions": {
+"type": "integer",
+"format": "int32"
+},
+"uuid": {
+"type": "string"
+},
+"subscribed": {
+"type": "boolean"
+},
+"subscriptors": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"keywords": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"categories": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"$ref": "#/definitions/Folder"
+}
+},
+"notes": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/Note"
+}
+}
+}
+},
+"QueryResult": {
+"type": "object",
+"properties": {
+"node": {
+"$ref": "#/definitions/Node"
+},
+"attachment": {
+"type": "boolean"
+},
+"excerpt": {
+"type": "string"
+},
+"score": {
+"type": "integer",
+"format": "int64"
+}
+}
+},
+"ResultSet": {
+"type": "object",
+"properties": {
+"total": {
+"type": "integer",
+"format": "int64"
+},
+"results": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/QueryResult"
+}
+}
+},
+"xml": {
+"name": "resultSet"
+}
+},
+"KeywordMap": {
+"type": "object",
+"properties": {
+"keyword": {
+"type": "string"
+},
+"occurs": {
+"type": "integer",
+"format": "int32"
+}
+},
+"xml": {
+"name": "keywordMap"
+}
+},
+"KeywordMapList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/KeywordMap"
+}
+}
+},
+"xml": {
+"name": "keywordMaps"
+}
+},
+"ProposedQueryReceived": {
+"type": "object",
+"properties": {
+"id": {
+"type": "integer",
+"format": "int64"
+},
+"from": {
+"type": "string"
+},
+"to": {
+"type": "string"
+},
+"user": {
+"type": "string"
+},
+"comment": {
+"type": "string"
+},
+"accepted": {
+"type": "boolean"
+},
+"seenDate": {
+"type": "string",
+"format": "date-time"
+},
+"sentDate": {
+"type": "string",
+"format": "date-time"
+}
+}
+},
+"ProposedQuerySent": {
+"type": "object",
+"properties": {
+"id": {
+"type": "integer",
+"format": "int64"
+},
+"from": {
+"type": "string"
+},
+"to": {
+"type": "string"
+},
+"user": {
+"type": "string"
+},
+"comment": {
+"type": "string"
+},
+"sentDate": {
+"type": "string",
+"format": "date-time"
+}
+}
+},
+"QueryParams": {
+"type": "object",
+"properties": {
+"id": {
+"type": "integer",
+"format": "int64"
+},
+"queryName": {
+"type": "string"
+},
+"user": {
+"type": "string"
+},
+"name": {
+"type": "string"
+},
+"keywords": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"categories": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"content": {
+"type": "string"
+},
+"mimeType": {
+"type": "string"
+},
+"author": {
+"type": "string"
+},
+"path": {
+"type": "string"
+},
+"lastModifiedFrom": {
+"type": "string",
+"format": "date-time"
+},
+"lastModifiedTo": {
+"type": "string",
+"format": "date-time"
+},
+"mailSubject": {
+"type": "string"
+},
+"mailFrom": {
+"type": "string"
+},
+"mailTo": {
+"type": "string"
+},
+"statementQuery": {
+"type": "string"
+},
+"statementType": {
+"type": "string"
+},
+"dashboard": {
+"type": "boolean"
+},
+"domain": {
+"type": "integer",
+"format": "int64"
+},
+"operator": {
+"type": "string"
+},
+"properties": {
+"type": "object",
+"additionalProperties": {
+"type": "string"
+}
+},
+"shared": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string"
+}
+},
+"proposedSent": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"$ref": "#/definitions/ProposedQuerySent"
+}
+},
+"proposedReceived": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"$ref": "#/definitions/ProposedQueryReceived"
+}
+}
+},
+"xml": {
+"name": "queryParams"
+}
+},
+"QueryParamsList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/QueryParams"
+}
+}
+},
+"xml": {
+"name": "queriesParams"
+}
+},
+"QueryResultList": {
+"type": "object",
+"properties": {
+"list": {
+"type": "array",
+"items": {
+"$ref": "#/definitions/QueryResult"
+}
+}
+},
+"xml": {
+"name": "queryResults"
+}
+}
+}
+}
