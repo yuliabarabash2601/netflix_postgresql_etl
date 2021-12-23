@@ -1,0 +1,1 @@
+[{"generated_data": false, "endpoint": "delete /store/order/{orderId}", "param_path": {"orderId": 45678}}]
